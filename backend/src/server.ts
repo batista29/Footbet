@@ -1,30 +1,25 @@
-import express from 'express';
-import { Router, Request, Response } from 'express'
+import express from "express";
+import { Request, Response, Router } from "express";
+import { AccountsHandler } from "./accounts/accounts";
 
-const backend = express();
-const route = Router();
 const port = 3000;
+const server = express();
+const routes = Router();
 
-backend.use(express.json());
-
-//rotas de serviços
-backend.post('/login', (req: Request, res: Response) => {
-    res.send('Login funcionando');
-})
-
-backend.post('/signUp', (req, res) => {
-    res.send('Cadastro funcionando');
+// definir as rotas. 
+// a rota tem um verbo/método http (GET, POST, PUT, DELETE)
+routes.get('/', (req: Request, res: Response) => {
+    res.statusCode = 403;
+    res.send('Acesso não permitido.');
 });
 
-backend.get('/carteira', (req: Request, res: Response) => {
-    res.send('Carteira funcionando');
-})
+// vamos organizar as rotas em outro local 
+routes.put('/signUp', AccountsHandler.createAccountRoute);
 
-backend.get('/apostasFeitas', (req, res) => {
-    res.send('Apostas feitas funcionando');
-});
+routes.post('/login', AccountsHandler.login);
 
-//Subindo servidor
-backend.listen(port, () => {
-    console.log(`Servidor rodando na porta: ${port}`);
+server.use(routes);
+
+server.listen(port, () => {
+    console.log(`Server is running on: ${port}`);
 })
