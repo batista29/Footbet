@@ -57,11 +57,24 @@ export namespace AccountsHandler {
         }
     }
 
+    //Para ver se a conta existe e as informações estão corretas
+    function verifyAccount(email: string, password: string): boolean {
+        let exists: boolean = false;
+
+        accountsDatabase.find(account => {
+            if (email === account.email && password === account.password) {
+                exists = true;
+            }
+        })
+
+        return exists;
+    }
+
     export const login: RequestHandler = (req: Request, res: Response) => {
         const email = req.get('email');
         const password = req.get('password');
 
-        if (email && password) {
+        if (email && password && verifyAccount(email, password)) {
             res.statusCode = 200;
             res.send(`Login efetuado`);
         } else {
