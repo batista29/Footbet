@@ -15,8 +15,17 @@ export namespace AccountsHandler {
         birthdate: string;
     };
 
+    //Carteira do usuario
+    export type UserWallet = {
+        id: number;
+        value: number;
+    }
+
     // Array que representa uma coleção de contas. 
     let accountsDatabase: UserAccount[] = [];
+
+    //array para armazenar valores de contas dos usuarios
+    let walletDatabase: UserWallet[] = [];
 
     /**
      * Salva uma conta no banco de dados. 
@@ -80,6 +89,41 @@ export namespace AccountsHandler {
         } else {
             res.statusCode = 400;
             res.send("Email ou senha incorretos");
+        }
+    }
+
+    //Adicionando deposito
+    function addValue(newDeposit: UserWallet): number {
+        walletDatabase.push(newDeposit);
+        return walletDatabase.length;
+    }
+
+    //Verificando se os dados estão vindo e chamando a função de add deposito
+    export const deposit: RequestHandler = (req: Request, res: Response) => {
+        const id = Number(req.get('id'));
+        const value = Number(req.get('value'));
+
+        if (id && value) {
+            const newDeposit: UserWallet = {
+                id: id,
+                value: value
+            }
+            const ok = addValue(newDeposit);
+            res.statusCode = 200;
+            res.send(`Quantidade de depositos feitos: ${ok}`);
+        } else {
+            res.statusCode = 400;
+        }
+    }
+
+    //Para ver os depositos
+    export const seeDeposits: RequestHandler = (req: Request, res: Response) => {
+        console.log(walletDatabase.length);
+        if (walletDatabase.length >= 1) {
+            res.statusCode = 200;
+            res.json(walletDatabase);
+        } else {
+            res.statusCode = 404;
         }
     }
 }
