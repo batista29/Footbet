@@ -73,5 +73,6 @@ export namespace EventsHandler {
             resp.statusCode=  400;
             resp.send(`Erro na obtenção dos dados ou dados inválidos`);
         }
+        addNewEventRoute;
     }
 }
