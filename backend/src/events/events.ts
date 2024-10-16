@@ -73,6 +73,14 @@ export namespace EventsHandler {
             resp.statusCode=  400;
             resp.send(`Erro na obtenção dos dados ou dados inválidos`);
         }
-        addNewEventRoute;
+    }
+    export const searchEventbyID: RequestHandler = (req, resp)=>{
+        const pId = req.get('id');
+        
+    }
+    export const evaluateNewEvent : RequestHandler = (req, resp)=>{
+        
+
+        
     }
 }
