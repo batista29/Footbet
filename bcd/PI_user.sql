@@ -4,5 +4,5 @@ CREATE TABLE Usuarios (
     Nome_usuario VARCHAR(100) NOT NULL,
     senha VARCHAR(255) NOT NULL,
     Email_usuario VARCHAR(100) NOT NULL,
-    data_abertura DATE NOT NULL
+    data_nascimento DATE NOT NULL
 );
