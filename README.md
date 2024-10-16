@@ -8,3 +8,5 @@
 * Apresentações banca | 03/12/2024
 * Apresentações banca | 05/12/2024
 * Apresentações banca | 10/12/2024
+
+### Documentação da conexão do banco de dados com node: https://node-oracledb.readthedocs.io/en/latest/user_guide/installation.html
