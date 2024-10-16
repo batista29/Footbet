@@ -24,7 +24,7 @@ routes.get('/seeDeposits', AccountsHandler.seeDeposits);
 
 //eventos
 routes.post('/addNewEvent', EventsHandler.addNewEventRoute);
-routes.post('/deleteEvent', EventsHandler.deleteEvent);
+routes.post('/deleteEvent',EventsHandler.deleteEvent);
 
 server.use(routes);
 

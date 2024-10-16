@@ -1,5 +1,3 @@
-
- 
  //Carteira do usuario
  export type UserWallet = {
     id: number;
