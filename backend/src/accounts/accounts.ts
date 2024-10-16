@@ -67,6 +67,7 @@ export namespace AccountsHandler {
                 password: pPassword,
                 birthdate: pBirthdate
             }
+            
             const ID = saveNewAccount(newAccount);
             res.statusCode = 200;
             res.send(`Nova conta adicionada. Código: ${ID}`);
