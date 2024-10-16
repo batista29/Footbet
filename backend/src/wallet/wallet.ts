@@ -1,8 +1,25 @@
- //Carteira do usuario
- export type UserWallet = {
-    id: number;
-    value: number;
-}
+import { Request, RequestHandler, Response } from "express";
+import { RowDataPacket, FieldPacket } from 'mysql2';
+
+export namespace walletHandler {
+
+    //Carteira do usuario
+    export type UserWallet = {
+        id: number;
+        value: number;
+    }
+
+    function connectDatabase() {
+        var mysql = require('mysql2');
+        const conn = mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database: 'teste'
+        });
+
+        return conn;
+    }
 
     //Verificando se os dados estão vindo e chamando a função de add deposito
     export const deposit: RequestHandler = (req: Request, res: Response) => {
