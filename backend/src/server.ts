@@ -1,6 +1,7 @@
 import express from "express";
 import { Request, Response, Router } from "express";
 import { AccountsHandler } from "./accounts/accounts";
+import { EventsHandler} from "./events/events";
 
 const port = 3000;
 const server = express();
@@ -20,6 +21,10 @@ routes.post('/login', AccountsHandler.login);
 //depositos
 routes.post('/newDeposit', AccountsHandler.deposit);
 routes.get('/seeDeposits', AccountsHandler.seeDeposits);
+
+//eventos
+routes.post('/addNewEvent', EventsHandler.addNewEventRoute);
+routes.post('/deleteEvent',EventsHandler.deleteEvent);
 
 server.use(routes);
 
