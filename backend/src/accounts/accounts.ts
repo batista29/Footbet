@@ -7,21 +7,21 @@ import oracledb from "oracledb";
 export namespace AccountsHandler {
 
     oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
-    
+
     async function connection() {
         const connection = await oracledb.getConnection({
             user: "hr",
             password: mypw,
             connectString: "localhost/FREEPDB1"
         });
-    
+
         const result = await connection.execute(
             `SELECT manager_id, department_id, department_name
              FROM Users
              WHERE manager_id = :id`,
             [103],  // bind value for :id
         );
-    
+
         console.log(result.rows);
         await connection.close();
     }
@@ -73,7 +73,6 @@ export const createAccountRoute: RequestHandler = (req: Request, res: Response) 
     }
 };
 
-<<<<<<< HEAD
 // Para verificar se a conta existe e as informações estão corretas
 function verifyAccount(email: string, password: string): boolean {
     let exists: boolean = false;
@@ -102,7 +101,7 @@ function verifyAccount(email: string, password: string): boolean {
                 password: pPassword,
                 birthdate: pBirthdate
             }
-            
+
             const ID = saveNewAccount(newAccount);
             res.statusCode = 200;
             res.send(`Nova conta adicionada. Código: ${ID}`);
@@ -135,7 +134,6 @@ function verifyAccount(email: string, password: string): boolean {
         } else {
             res.statusCode = 400;
             res.send("Email ou senha incorretos");
->>>>>>> ac66c4d4ef33613eef044055a82d9ab6d0b980a0
         }
     })*/
     // select para verificar se o email e senha estão no banco
