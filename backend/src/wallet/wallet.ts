@@ -15,7 +15,7 @@ export namespace walletHandler {
             host: 'localhost',
             user: 'root',
             password: '',
-            database: 'teste'
+            database: 'footbet'
         });
 
         return conn;
@@ -23,14 +23,16 @@ export namespace walletHandler {
 
     //Verificando se os dados estão vindo e chamando a função de add deposito
     export const deposit: RequestHandler = (req: Request, res: Response) => {
-        const id = Number(req.get('id'));
+        const id_wallet = Number(req.get('id_wallet'));
+        const id_user = Number(req.get('id_user'));
         const value = Number(req.get('value'));
+        const type = req.get('type');
 
         //verificando se nao vem campo vazio
-        if (id && value) {
+        if (id_wallet && id_user && value && type) {
             //conectando com o banco, fiz a função para nao ter que copiar 7 linhas toda hora
             let conn = connectDatabase();
-            conn.query(`INSERT INTO carteira VALUES(${id}, ${value});`, function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
+            conn.query(`INSERT INTO Transacao VALUES(${id_wallet},${id_user}, ${value}, '${type}');`, function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
                 if (!err) {
                     res.statusCode = 200;
                     //retornando 1, que é a quantidade de campos alterados, se nao retornar 1 é porque deu erro
@@ -52,7 +54,7 @@ export namespace walletHandler {
     export const seeDeposits: RequestHandler = (req: Request, res: Response) => {
         let conn = connectDatabase();
 
-        conn.query('SELECT * FROM carteira;', function (err: Error, data: RowDataPacket[]) {
+        conn.query('SELECT * FROM Transacao;', function (err: Error, data: RowDataPacket[]) {
             if (!err) {
                 res.statusCode = 200;
                 res.send(data);
