@@ -22,7 +22,7 @@ export namespace walletHandler {
     }
 
     //Verificando se os dados estão vindo e chamando a função de add deposito
-    export const deposit: RequestHandler = (req: Request, res: Response) => {
+    export const transation: RequestHandler = (req: Request, res: Response) => {
         const id_wallet = Number(req.get('id_wallet'));
         const id_user = Number(req.get('id_user'));
         let value = Number(req.get('value'));
@@ -70,7 +70,7 @@ export namespace walletHandler {
     }
 
     export const seeBalance: RequestHandler = (req: Request, res: Response) => {
-        const id_user = Number(req.get('id_user'));
+        const id_user = Number(req.params.id);
 
         if (id_user) {
             let conn = connectDatabase();

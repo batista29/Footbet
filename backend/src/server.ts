@@ -18,9 +18,9 @@ routes.get('/', (req: Request, res: Response) => {
 // routes.post('/login', AccountsHandler.login);
 
 // Transações
-routes.post('/newDeposit', walletHandler.deposit);
+routes.post('/newTransation', walletHandler.transation);
 routes.get('/seeDeposits', walletHandler.seeDeposits);
-routes.post('/seeBalance', walletHandler.seeBalance);
+routes.post('/seeBalance/:id', walletHandler.seeBalance);
 
 //eventos
 routes.post('/addNewEvent', EventsHandler.addNewEventRoute);
