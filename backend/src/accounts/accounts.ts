@@ -70,7 +70,7 @@ export namespace AccountsHandler {
     }
 
     //funcao para tratar o cadastro
-    export const createAccountRoute: RequestHandler = (req: Request, res: Response) => {
+    export const createAccountRoute: RequestHandler = async(req: Request, res: Response) => {
         // Passo 1 - Receber os parâmetros para criar a conta
         const userId = req.get('userid');
         const fullName = req.get('fullname');
@@ -105,10 +105,10 @@ export namespace AccountsHandler {
 
 
     //funcao para tratar o login
-    export const login: RequestHandler = (req: Request, res: Response) => {
+    export const login: RequestHandler = async(req: Request, res: Response) => {
         
-        const pEmail = req.get('email');
-        const pPassword = req.get('password');
+        const email = req.get('email');
+        const password = req.get('password');
 
         if (email && password) {
             const isValid = await verifyAccount(email, password);
@@ -167,3 +167,31 @@ export namespace AccountsHandler {
             res.status(400).send("Parâmetros inválidos ou faltantes.");
         }
     };
+
+    //Função de deletar a conta
+    export const deleteAccount: RequestHandler = async (req: Request, res: Response) => {
+        const userId = req.get('userid');
+        if (userId) {
+            try {
+                const connection = await getConnection();
+                const result = await connection.execute(
+                    `DELETE FROM User WHERE user_id = user_id`,
+                    {user_id: userId},
+                    {autoCommit: true}
+                );
+
+                await connection.close();
+                if (result.rowsAffected) {
+                    res.status(200).send(`Conta com ID ${userId} excluida com sucesso.`);
+                } else {
+                    res.status(404).send(`Usuário com ID ${userId} não encontrado.`);
+                }
+            } catch (error) {
+                console.error("Error deleting account:", error);
+                res.status(500).send("Erro ao atualizar a conta.");
+            }
+        } else {
+            res.status(400).send("Parâmetros 'userid' inválidos ou faltantes.");
+        }
+    };
+}
