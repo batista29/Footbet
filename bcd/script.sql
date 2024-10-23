@@ -13,7 +13,7 @@ CREATE TABLE Usuario(
 );
 
 CREATE TABLE Transacao(
-    id_wallet INTEGER NOT NULL PRIMARY KEY,
+    id_wallet INTEGER NOT NULL,
     id_user INTEGER NOT NULL,
     value INTEGER NOT NULL DEFAULT 0,
     type VARCHAR(8),
@@ -44,3 +44,5 @@ INSERT INTO Usuario VALUES(2,'Jhenifer Laís', 'JLais', 'Lais@Wager.com', 'Wager
 
 SELECT * FROM Usuario;
 SELECT * FROM Transacao;
+
+SELECT SUM(value) as 'saldo' FROM Transacao WHERE id_user = 2;

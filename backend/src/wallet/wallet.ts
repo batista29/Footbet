@@ -25,11 +25,15 @@ export namespace walletHandler {
     export const deposit: RequestHandler = (req: Request, res: Response) => {
         const id_wallet = Number(req.get('id_wallet'));
         const id_user = Number(req.get('id_user'));
-        const value = Number(req.get('value'));
+        let value = Number(req.get('value'));
         const type = req.get('type');
 
         //verificando se nao vem campo vazio
         if (id_wallet && id_user && value && type) {
+            if (type === 'saque') {
+                value = -1 * value;
+            }
+            console.log(value)
             //conectando com o banco, fiz a função para nao ter que copiar 7 linhas toda hora
             let conn = connectDatabase();
             conn.query(`INSERT INTO Transacao VALUES(${id_wallet},${id_user}, ${value}, '${type}');`, function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
@@ -63,5 +67,23 @@ export namespace walletHandler {
                 res.send("Error")
             }
         });
+    }
+
+    export const seeBalance: RequestHandler = (req: Request, res: Response) => {
+        const id_user = Number(req.get('id_user'));
+
+        if (id_user) {
+            let conn = connectDatabase();
+
+            conn.query(`SELECT SUM(value) as 'saldo' FROM Transacao WHERE id_user = ${id_user};`, function (err: Error, data: RowDataPacket[]) {
+                if (!err) {
+                    res.statusCode = 200;
+                    res.send('Saldo: ' + data[0].saldo);
+                } else {
+                    res.statusCode = 400;
+                    res.send("Error")
+                }
+            });
+        }
     }
 }

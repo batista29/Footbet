@@ -17,9 +17,10 @@ routes.get('/', (req: Request, res: Response) => {
 // routes.post('/signUp', AccountsHandler.createAccountRoute);
 // routes.post('/login', AccountsHandler.login);
 
-//depositos
+// Transações
 routes.post('/newDeposit', walletHandler.deposit);
 routes.get('/seeDeposits', walletHandler.seeDeposits);
+routes.post('/seeBalance', walletHandler.seeBalance);
 
 //eventos
 routes.post('/addNewEvent', EventsHandler.addNewEventRoute);
