@@ -5,28 +5,22 @@ export namespace AccountsHandler {
 
     oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
-// Função para estabelecer conexão com o OracleDB
-<<<<<<< HEAD
-    async function connection() {
-        const connection = await oracledb.getConnection({
-            user: "hr",
-            password: mypw,
-=======
+    // Função para estabelecer conexão com o OracleDB
     async function getConnection() {
         const connection = await oracledb.getConnection({
             user: "hr",
             password: "mypw",
->>>>>>> f023d0aed4c2e3b7a8795838b0433d0d32201482
             connectString: "localhost/FREEPDB1"
         });
-}
+    }
 
     export type UserAccount = {
         user_id: string;
         full_name: string;
         username: string;
-        password: string;
         email: string;
+        password: string;
+        token: string;
         birth_date: Date;
     };
 
@@ -49,7 +43,7 @@ export namespace AccountsHandler {
             );
             await connection.close();
             return result.lastRowid;
-        } 
+        }
         catch (err) {
             console.error("Erro ao salvar a conta!", err);
             return undefined;
@@ -77,7 +71,7 @@ export namespace AccountsHandler {
     }
 
     //funcao para tratar o cadastro
-    export const createAccountRoute: RequestHandler = async(req: Request, res: Response) => {
+    export const createAccountRoute: RequestHandler = async (req: Request, res: Response) => {
         // Passo 1 - Receber os parâmetros para criar a conta
         const userId = req.get('userid');
         const fullName = req.get('fullname');
@@ -100,34 +94,34 @@ export namespace AccountsHandler {
 
             if (ID) {
                 res.status(200).send(`Nova conta adicionada. Código: ${ID}`);
-            } 
+            }
             else {
                 res.status(500).send("Erro ao criar a conta. Tente novamente.");
             }
-            }
-            else {
-                res.status(400).send("Parâmetros inválidos ou faltantes.");
-            }
-        };
+        }
+        else {
+            res.status(400).send("Parâmetros inválidos ou faltantes.");
+        }
+    };
 
 
     //funcao para tratar o login
-    export const login: RequestHandler = async(req: Request, res: Response) => {
-        
+    export const login: RequestHandler = async (req: Request, res: Response) => {
+
         const email = req.get('email');
         const password = req.get('password');
 
         if (email && password) {
             const isValid = await verifyAccount(email, password);
-                if (isValid) {
-                    res.status(200).send("Login efetuado com sucesso.");
-                } else {
-                    res.status(401).send("Email ou senha incorretos.");
-                }
+            if (isValid) {
+                res.status(200).send("Login efetuado com sucesso.");
             } else {
-                res.status(400).send("Parâmetros inválidos ou faltantes.");
+                res.status(401).send("Email ou senha incorretos.");
             }
-        };
+        } else {
+            res.status(400).send("Parâmetros inválidos ou faltantes.");
+        }
+    };
 
     //Função de atualização de conta
     export const updateAccount: RequestHandler = async (req: Request, res: Response) => {
@@ -183,8 +177,8 @@ export namespace AccountsHandler {
                 const connection = await getConnection();
                 const result = await connection.execute(
                     `DELETE FROM User WHERE user_id = user_id`,
-                    {user_id: userId},
-                    {autoCommit: true}
+                    { user_id: userId },
+                    { autoCommit: true }
                 );
 
                 await connection.close();
