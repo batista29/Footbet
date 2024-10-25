@@ -6,10 +6,17 @@ export namespace AccountsHandler {
     oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 // Função para estabelecer conexão com o OracleDB
+<<<<<<< HEAD
     async function connection() {
         const connection = await oracledb.getConnection({
             user: "hr",
             password: mypw,
+=======
+    async function getConnection() {
+        const connection = await oracledb.getConnection({
+            user: "hr",
+            password: "mypw",
+>>>>>>> f023d0aed4c2e3b7a8795838b0433d0d32201482
             connectString: "localhost/FREEPDB1"
         });
 }
