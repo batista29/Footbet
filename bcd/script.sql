@@ -29,8 +29,7 @@ CREATE TABLE Evento(
     dataEvento DATE,
     inicioApostas datetime,
     fimApostas datetime,
-    cotaSim decimal(10,2),
-    cotaNao decimal(10,2),
+    valor_cota decimal(10,2),
     status varchar(20) Default 'analise',
     FOREIGN KEY(id_criador) REFERENCES Usuario(id_user)
 );
@@ -38,7 +37,8 @@ CREATE TABLE Evento(
 CREATE TABLE Participa(
     id_participante INTEGER NOT NULL,
     id_evento INTEGER NOT NULL,
-    valor_apostado decimal(10,2),
+    qtd_cotas integer,
+    total_apostado decimal(10,2),
     aposta varchar(2),
     CONSTRAINT ck_aposta CHECK (aposta ='s' or aposta = 'n'),
     FOREIGN KEY(id_participante) REFERENCES Usuario(id_user),
