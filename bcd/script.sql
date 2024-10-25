@@ -26,9 +26,12 @@ CREATE TABLE Evento(
     id_criador INTEGER NOT NULL,
     titulo VARCHAR(50) NOT NULL,
     descricao VARCHAR(50) NOT NULL,
-    time1 VARCHAR(15) NOT NULL,
-    time2 VARCHAR(15) NOT NULL,
-    aprovado BOOLEAN DEFAULT FALSE,
+    dataEvento DATE,
+    inicioApostas datetime,
+    fimApostas datetime,
+    cotaSim decimal(10,2),
+    cotaNao decimal(10,2),
+    status varchar(20) Default 'analise',
     FOREIGN KEY(id_criador) REFERENCES Usuario(id_user)
 );
 
