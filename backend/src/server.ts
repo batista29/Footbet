@@ -18,13 +18,14 @@ routes.get('/', (req: Request, res: Response) => {
 // routes.post('/login', AccountsHandler.login);
 
 // Transações
-routes.post('/newTransation', walletHandler.transation);
-routes.get('/seeDeposits', walletHandler.seeDeposits);
-routes.post('/seeBalance/:id', walletHandler.seeBalance);
+routes.post('/addFunds', walletHandler.addFunds);
+routes.post('/withdrawFunds', walletHandler.withdrawFunds);
+//seeBalance para ver quanto tem na carteira
+// routes.post('/seeBalance/:id', walletHandler.seeBalance);
 
 //eventos
-routes.post('/addNewEvent', EventsHandler.addNewEventRoute);
-routes.post('/deleteEvent', EventsHandler.deleteEvent);
+// routes.post('/addNewEvent', EventsHandler.addNewEventRoute);
+// routes.post('/deleteEvent', EventsHandler.deleteEvent);
 
 server.use(routes);
 
