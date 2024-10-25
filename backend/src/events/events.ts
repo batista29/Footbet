@@ -18,31 +18,30 @@ export namespace EventsHandler {
     // Tipo Evento
     type Event = {
         id: number;
+        id_creator: number;
         title: string;
         description: string;
         eventDate: Date;
         betsStart: Date;
         betsEnd: Date;
-        valueYes: number;
-        valueNo: number;
+        value: number;
         status: string;
     };
-
     // Função para salvar um novo evento no banco de dados
     async function saveNewEvent(ev: Event): Promise<void> {
         const connection = await getConnection();
         await connection.execute(
-            `INSERT INTO Evento (id, title, description, eventDate, betsStart, betsEnd, valueYes, valueNo, status)
-             VALUES (:id, :title, :description, :eventDate, :betsStart, :betsEnd, :valueYes, :valueNo, :status)`,
+            `INSERT INTO Evento (id_evento, id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, valor_cota, status)
+             VALUES (:id, :id_creator, :title, :description, :eventDate, :betsStart, :betsEnd, :value, :status)`,
             {
                 id: ev.id,
+                id_creator: ev.id_creator,
                 title: ev.title,
                 description: ev.description,
                 eventDate: ev.eventDate,
                 betsStart: ev.betsStart,
                 betsEnd: ev.betsEnd,
-                valueYes: ev.valueYes,
-                valueNo: ev.valueNo,
+                value: ev.value,
                 status: ev.status,
             },
             { autoCommit: true }
@@ -53,25 +52,25 @@ export namespace EventsHandler {
     export const addNewEventRoute: RequestHandler = async (req, resp) => {
         try {
             const pId = req.get('id');
+            const pId_creator = req.get('id_creator'); //ver se não é erro aqui
             const pTitle = req.get('title');
             const pDescription = req.get('description');
             const pEventDate: any = req.get('eventDate');
             const pBetsStart: any = req.get('betsStart');
             const pBetsEnd: any = req.get('betsEnd');
-            const pValueYes = req.get('valueYes');
-            const pValueNo = req.get('valueNo');
+            const pValue = req.get('value');
             const pStatus = "analise";
 
             if (pTitle && pDescription && pEventDate) {
                 const newEvent: Event = {
                     id: Number(pId),
+                    id_creator: Number(pId_creator),
                     title: pTitle,
                     description: pDescription,
                     eventDate: new Date(pEventDate),
                     betsStart: new Date(pBetsStart),
                     betsEnd: new Date(pBetsEnd),
-                    valueYes: Number(pValueYes),
-                    valueNo: Number(pValueNo),
+                    value: Number(pValue),
                     status: pStatus,
                 };
                 await saveNewEvent(newEvent);
@@ -206,5 +205,6 @@ export namespace EventsHandler {
             console.error('Erro na rota:', error);
             resp.status(500).send('Erro ao encerrar o evento.');
         }
-    };
+    }
+
 }
