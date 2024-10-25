@@ -35,6 +35,9 @@ CREATE TABLE Evento(
 CREATE TABLE Participa(
     id_participante INTEGER NOT NULL,
     id_evento INTEGER NOT NULL,
+    valor_apostado decimal(10,2),
+    aposta varchar(2),
+    CONSTRAINT ck_aposta CHECK (aposta ='s' or aposta = 'n'),
     FOREIGN KEY(id_participante) REFERENCES Usuario(id_user),
     FOREIGN KEY(id_evento) REFERENCES Evento(id_evento)
 );
