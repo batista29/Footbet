@@ -18,7 +18,8 @@ CREATE TABLE Transacao(
     value INTEGER NOT NULL DEFAULT 0,
     type VARCHAR(8),
     CONSTRAINT CHK_type CHECK (type ='saque' or type='deposito'),
-    FOREIGN KEY (id_user) REFERENCES Usuario(id_user)
+    FOREIGN KEY (id_user) REFERENCES Usuario(id_user),
+    date_transation timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Evento(
