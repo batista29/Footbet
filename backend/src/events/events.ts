@@ -94,32 +94,10 @@ export namespace EventsHandler {
         }
     };
 
-    enum RejectionReason {
-        ConfusingText = 'Texto confuso!',
-        InappropriateText = 'Texto inapropriado!',
-        PolicyViolation = 'Não respeita a política de privacidade e/ou termos de uso da plataforma!',
-    }
-    async function sendRejectionEmail(email: string, rejectionReason: any) {
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'puccampinas@gmail.com',
-                pass: 'puccamp',
-            },
-        });
-        await transporter.sendMail({
-            from: 'puccampinas@gmail.com',
-            to: email,
-            subject: 'Seu evento foi reprovado!',
-            text: `Seu evento foi reprovado pelo seguinte motivo: ${rejectionReason}`,
-        });
-        console.log(`Email enviado para ${email}`);
-    }
-
     export const evaluateNewEvent: RequestHandler = async (req, resp) => {
         const eventId = req.get('eventId');
         const status = req.get('status');
-        const rejectionReason = req.get('rejectionReason');
+        const rejectionReason = req.get('rejectioReason');
 
         if (!eventId || !status || (status !== "aceito" && status !== "rejeitado")) {
             return resp.status(400).send('Dados inválidos.');
@@ -142,11 +120,24 @@ export namespace EventsHandler {
             const email = emailRows[0].EMAIL;
 
             if (status === 'rejeitado') {
-                await connection.execute('UPDATE events SET status = :status, rejectionReason = :reason WHERE id = :eventId',
+                await connection.execute('UPDATE events SET status = :status WHERE id = :eventId',
                     { status, reason: rejectionReason, eventId });
-
-                await sendRejectionEmail(email, rejectionReason);
-                return resp.status(200).send(`Evento com ID ${eventId} foi reprovado e o motivo enviado ao criador.`);
+                    const transporter = nodemailer.createTransport({
+                        host: 'smtp.gmail.com',
+                        port: 587,
+                        secure: false,
+                        auth: {
+                            user: 'puccampinas@gmail.com',
+                            pass: 'puccamp',
+                        },
+                    });
+                    await transporter.sendMail({
+                        from: 'puccampinas@gmail.com',
+                        to: email,
+                        subject: 'Seu evento foi reprovado!',
+                        text: `Seu evento foi reprovado pelo seguinte motivo: ${rejectionReason}`,
+                    });
+                    console.log(`Email enviado para ${email}`);
             }
             // Para o status "aceito"
             await connection.execute('UPDATE events SET status = :status WHERE id = :eventId', { status: 'aceito', eventId });
@@ -189,13 +180,13 @@ export namespace EventsHandler {
     export const betOnEvent: RequestHandler = async (req, resp) => {
         const connection = await getConnection();
         try {
+            const Token = Number(req.get('Token'));
             const eventId = Number(req.get('eventId'));
-            const email = (req.get('email'));
             const amount = Number(req.get('amount'));
             const prediction = req.get('prediction') as 'Sim' | 'Não';
 
             // Verifica se o usuário existe
-            const userResult = await connection.execute(`SELECT * FROM user WHERE email = :email`, { email });
+            const userResult = await connection.execute(`SELECT * FROM user WHERE Token = :Token`, { Token });
             const userRows = userResult as Array<{ balance: number }>;
 
             if (userRows.length === 0) {
@@ -213,10 +204,10 @@ export namespace EventsHandler {
                 return resp.status(400).send("Saldo insuficiente! Por favor, faça um crédito na sua carteira.");
             }
             // Registrar aposta e deduzir saldo do usuário
-            await connection.execute(`INSERT INTO bets (event_id, user_email, amount, prediction) VALUES (:eventId, :email, :amount, :prediction)`,
-                { eventId, email, amount, prediction });
+            await connection.execute(`INSERT INTO bets (event_id, Token, amount, prediction) VALUES (:eventId, :Token, :amount, :prediction)`,
+                { eventId, Token, amount, prediction });
             // Atualizar saldo do usuário
-            await connection.execute(`UPDATE users SET balance = balance - :amount WHERE email = :email`, { amount, email });
+            await connection.execute(`UPDATE users SET balance = balance - :amount WHERE Token = :Token`, { amount, Token });
             await connection.commit();
 
             // Atualizar o saldo local
