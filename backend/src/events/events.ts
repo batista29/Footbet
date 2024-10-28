@@ -98,6 +98,7 @@ export namespace EventsHandler {
         const eventId = req.get('eventId');
         const status = req.get('status');
         const rejectionReason = req.get('rejectioReason');
+        const token = req.get('token');
 
         if (!eventId || !status || (status !== "aceito" && status !== "rejeitado")) {
             return resp.status(400).send('Dados inválidos.');
@@ -122,22 +123,22 @@ export namespace EventsHandler {
             if (status === 'rejeitado') {
                 await connection.execute('UPDATE events SET status = :status WHERE id = :eventId',
                     { status, reason: rejectionReason, eventId });
-                    const transporter = nodemailer.createTransport({
-                        host: 'smtp.gmail.com',
-                        port: 587,
-                        secure: false,
-                        auth: {
-                            user: 'puccampinas@gmail.com',
-                            pass: 'puccamp',
-                        },
-                    });
-                    await transporter.sendMail({
-                        from: 'puccampinas@gmail.com',
-                        to: email,
-                        subject: 'Seu evento foi reprovado!',
-                        text: `Seu evento foi reprovado pelo seguinte motivo: ${rejectionReason}`,
-                    });
-                    console.log(`Email enviado para ${email}`);
+                const transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: 'puccampinas@gmail.com',
+                        pass: 'puccamp',
+                    },
+                });
+                await transporter.sendMail({
+                    from: 'puccampinas@gmail.com',
+                    to: email,
+                    subject: 'Seu evento foi reprovado!',
+                    text: `Seu evento foi reprovado pelo seguinte motivo: ${rejectionReason}`,
+                });
+                console.log(`Email enviado para ${email}`);
             }
             // Para o status "aceito"
             await connection.execute('UPDATE events SET status = :status WHERE id = :eventId', { status: 'aceito', eventId });
