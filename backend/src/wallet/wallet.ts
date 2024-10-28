@@ -1,6 +1,5 @@
 import { Request, RequestHandler, Response } from "express";
 import { RowDataPacket, FieldPacket } from 'mysql2';
-import { resolve } from "path";
 
 export namespace walletHandler {
 
@@ -33,7 +32,7 @@ export namespace walletHandler {
         if (id_wallet && id_user && value && type && Math.sign(value) !== -1) {
             //conectando com o banco, fiz a função para nao ter que copiar 7 linhas toda hora
             let conn = connectDatabase();
-            conn.query(`INSERT INTO Transacao (id_wallet,id_user,value,type) VALUES(${id_wallet},${id_user}, ${value}, '${type}');`, function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
+            conn.query(`INSERT INTO Transacao (id_wallet,user_id,value,type) VALUES(${id_wallet},${id_user}, ${value}, '${type}');`, function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
                 if (!err) {
                     res.statusCode = 200;
                     //retornando 1, que é a quantidade de campos alterados, se nao retornar 1 é porque deu erro
@@ -55,12 +54,13 @@ export namespace walletHandler {
         return await new Promise((resolve, reject) => {
             if (id_user) {
                 let conn = connectDatabase();
-                conn.query(`SELECT SUM(value) as 'saldo' FROM Transacao WHERE id_user = ${id_user};`, function (err: Error, data: RowDataPacket[]) {
-                    if (!err || data && data.length > 0) {
-                        resolve(data[0].saldo);
-                    }
-                    reject(null);
-                });
+                conn.query(`SELECT SUM(value) as 'saldo' FROM Transacao WHERE user_id = ${id_user};`,
+                    function (err: Error, data: RowDataPacket[]) {
+                        if (!err || data && data.length > 0) {
+                            resolve(data[0].saldo);
+                        }
+                        reject(null);
+                    });
             }
         })
     }
@@ -76,7 +76,7 @@ export namespace walletHandler {
         if (id_wallet && id_user && value && type && balance >= value && Math.sign(value) !== -1) {
             //conectando com o banco, fiz a função para nao ter que copiar 7 linhas toda hora
             let conn = connectDatabase();
-            conn.query(`INSERT INTO Transacao VALUES(${id_wallet},${id_user}, -${value}, '${type}');`, function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
+            conn.query(`INSERT INTO Transacao (id_wallet,user_id,value,type) VALUES(${id_wallet},${id_user}, -${value}, '${type}');`, function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
                 if (!err) {
                     res.statusCode = 200;
                     //retornando 1, que é a quantidade de campos alterados, se nao retornar 1 é porque deu erro
