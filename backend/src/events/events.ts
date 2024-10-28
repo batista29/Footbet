@@ -94,12 +94,12 @@ export namespace EventsHandler {
         }
     };
 
+    //Função para avaliar um novo evento
     export const evaluateNewEvent: RequestHandler = async (req, resp) => {
         const eventId = req.get('eventId');
         const status = req.get('status');
         const rejectionReason = req.get('rejectioReason');
-        const token = req.get('token');
-
+    
         if (!eventId || !status || (status !== "aceito" && status !== "rejeitado")) {
             return resp.status(400).send('Dados inválidos.');
         }
@@ -107,38 +107,38 @@ export namespace EventsHandler {
         try {
             const eventResult = await connection.execute('SELECT creatorToken FROM events WHERE ID = :eventId', { eventId });
             const eventRows = eventResult.rows as Array<{ CREATORTOKEN: string }>;
-
+    
             if (eventRows.length === 0) {
                 return resp.status(404).send('Evento não encontrado.');
             }
             const creatorToken = eventRows[0].CREATORTOKEN;
             const emailResult = await connection.execute('SELECT email FROM accounts WHERE token = :creatorToken', { creatorToken });
             const emailRows = emailResult.rows as Array<{ EMAIL: string }>;
-
+    
             if (emailRows.length === 0) {
                 return resp.status(404).send('E-mail do criador não encontrado.');
             }
             const email = emailRows[0].EMAIL;
-
+    
             if (status === 'rejeitado') {
                 await connection.execute('UPDATE events SET status = :status WHERE id = :eventId',
                     { status, reason: rejectionReason, eventId });
-                const transporter = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 587,
-                    secure: false,
-                    auth: {
-                        user: 'puccampinas@gmail.com',
-                        pass: 'puccamp',
-                    },
-                });
-                await transporter.sendMail({
-                    from: 'puccampinas@gmail.com',
-                    to: email,
-                    subject: 'Seu evento foi reprovado!',
-                    text: `Seu evento foi reprovado pelo seguinte motivo: ${rejectionReason}`,
-                });
-                console.log(`Email enviado para ${email}`);
+                    const transporter = nodemailer.createTransport({
+                        host: 'smtp.gmail.com',
+                        port: 587,
+                        secure: false,
+                        auth: {
+                            user: 'testepuccamp@gmail.com',
+                            pass: 'ugjaxfamlczvwuae',
+                        },
+                    });
+                    await transporter.sendMail({
+                        from: 'testepuccamp@gmail.com',
+                        to: email,
+                        subject: 'Seu evento foi reprovado!',
+                        text: `Seu evento foi reprovado pelo seguinte motivo: ${rejectionReason}`,
+                    });
+                    console.log(`Email enviado para ${email}`);
             }
             // Para o status "aceito"
             await connection.execute('UPDATE events SET status = :status WHERE id = :eventId', { status: 'aceito', eventId });
@@ -178,55 +178,55 @@ export namespace EventsHandler {
     };
 
     // Função para apostar em um evento
-    export const betOnEvent: RequestHandler = async (req, resp) => {
-        const connection = await getConnection();
-        try {
-            const Token = Number(req.get('Token'));
-            const eventId = Number(req.get('eventId'));
-            const amount = Number(req.get('amount'));
-            const prediction = req.get('prediction') as 'Sim' | 'Não';
+export const betOnEvent: RequestHandler = async (req, resp) => {
+    const connection = await getConnection();
+    try {
+        const Token = Number(req.get('Token'));
+        const eventId = Number(req.get('eventId'));
+        let value = Number(req.get('value'));
+        const prediction = req.get('prediction') as 'Sim' | 'Não';
 
-            // Verifica se o usuário existe
-            const userResult = await connection.execute(`SELECT * FROM user WHERE Token = :Token`, { Token });
-            const userRows = userResult as Array<{ balance: number }>;
+        // Verifica se o usuário existe
+        const userResult = await connection.execute(`SELECT * FROM user WHERE Token = :Token`, { Token });
+        const userRows = userResult as Array<{ balance: number }>;
 
-            if (userRows.length === 0) {
-                return resp.status(404).send("Usuário não encontrado.");
-            }
-            const user = userRows[0];
-            const eventResult = await connection.execute(`SELECT * FROM events WHERE id = :eventId`, { eventId });
-            const eventRows = eventResult as Array<{ status: string }>;
+        if (userRows.length === 0) {
+            return resp.status(404).send("Usuário não encontrado.");
+        }
+        const user = userRows[0];
+        const eventResult = await connection.execute(`SELECT * FROM events WHERE id = :eventId`, { eventId });
+        const eventRows = eventResult as Array<{ status: string }>;
 
-            if (eventRows.length === 0 || eventRows[0].status !== "aceito") {
-                return resp.status(404).send("Evento não encontrado ou não disponível para apostas.");
-            }
-            // Verifica saldo do usuário
-            if (user.balance < amount) { // Supondo que balance é a segunda coluna
-                return resp.status(400).send("Saldo insuficiente! Por favor, faça um crédito na sua carteira.");
-            }
-            // Registrar aposta e deduzir saldo do usuário
-            await connection.execute(`INSERT INTO bets (event_id, Token, amount, prediction) VALUES (:eventId, :Token, :amount, :prediction)`,
-                { eventId, Token, amount, prediction });
-            // Atualizar saldo do usuário
-            await connection.execute(`UPDATE users SET balance = balance - :amount WHERE Token = :Token`, { amount, Token });
-            await connection.commit();
+        if (eventRows.length === 0 || eventRows[0].status !== "aceito") {
+            return resp.status(404).send("Evento não encontrado ou não disponível para apostas.");
+        }
+        // Verifica saldo do usuário
+        if (user.balance < value) { 
+            return resp.status(400).send("Saldo insuficiente! Por favor, faça um crédito na sua carteira.");
+        }
+        // Registrar aposta e deduzir saldo do usuário
+        await connection.execute(`INSERT INTO Transacao (event_id, Token, value, prediction) VALUES (:eventId, :Token, :amount, :prediction)`,
+            { eventId, Token, value, prediction });
+        // Atualizar saldo do usuário
+        await connection.execute(`UPDATE Transacao SET balance = balance - :value WHERE Token = :Token`, { value, Token });
+        await connection.commit();
 
-            // Atualizar o saldo local
-            user.balance -= amount;
-            resp.status(200).send(`Aposta de R$${amount} realizada no evento "${eventId}". Saldo atual: R$${user.balance.toFixed(2)}`)
-        } catch (err) {
-            console.error(err);
-            resp.status(500).send("Erro ao realizar a aposta.");
-        } finally {
-            if (connection) {
-                try {
-                    await connection.close();
-                } catch (err) {
-                    console.error(err);
-                }
+        // Atualizar o saldo local
+        user.balance -= value;
+        resp.status(200).send(`Aposta de R$${value} realizada no evento "${eventId}". Saldo atual: R$${user.balance.toFixed(2)}`)
+    } catch (err) {
+        console.error(err);
+        resp.status(500).send("Erro ao realizar a aposta.");
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
             }
         }
-    };
+    }
+};
 
     // Função para encontrar apostadores vencedores
     export async function findBettors(id: number, betResult: string): Promise<any[]> {
