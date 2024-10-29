@@ -6,11 +6,19 @@ CREATE TABLE User(
     user_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     full_name varchar(255) NOT NULL,
     username VARCHAR(20) NOT NULL,
-    email VARCHAR(20) NOT NULL,
+    email VARCHAR(50) UNIQUE NOT NULL,
     password_user VARCHAR(20) NOT NULL,
-    token VARCHAR(32) UNIQUE,
-    birth_date timestamp NOT NULL
+    token VARCHAR(32) UNIQUE NOT NULL,
+    birth_date timestamp NOT NULL,
+    type_user VARCHAR(10) NOT NULL,
+    CONSTRAINT CHK_type_user CHECK (type_user ='moderador' or type_user='comum')
 );
+
+INSERT INTO User(user_id, full_name, username, email, password_user, token, birth_date, type_user)
+VALUES(DEFAULT,'Natã Batista', 'natabatista', 'natabatista2908@gmail.com', '123', 'oTGxxkHLQQJDmLJEBL9DQCrlaof7ap9J', '2005-08-29', 'moderador');
+
+INSERT INTO User(user_id, full_name, username, email, password_user, token, birth_date, type_user)
+VALUES(DEFAULT,'Maria Gabriella', 'mariagabriella', 'mariagabriella@gmail.com', '12345', 'BAoex3xEcwgnvaYQQWx9TvHHEePU1EQa', '2005-04-05', 'moderador');
 
 CREATE TABLE Transacao(
     id_wallet INTEGER NOT NULL,
@@ -46,10 +54,9 @@ CREATE TABLE Participa(
     FOREIGN KEY(id_evento) REFERENCES Evento(id_evento)
 );
 
-INSERT INTO User VALUES(DEFAULT,'Natã Batista', 'natabatista', 'natabatista2908@gmail.com', '123', '1h234j', '2007/05/20');
-INSERT INTO User VALUES(DEFAULT,'Jhenifer Laís', 'JLais', 'Lais@Wager.com', 'WagerBest123', 'FEWUFIEJOQDHRUY32HEFU3RB2UT', '2004/02/21');
-
 SELECT * FROM User;
 SELECT * FROM Transacao;
 
-SELECT SUM(value) as 'saldo' FROM Transacao WHERE user_id = 2;
+-- SELECT SUM(value) as 'saldo' FROM Transacao WHERE user_id = 2;
+
+SELECT token FROM User WHERE email = 'natabatista2908@gmail.com' AND password_user = '123';

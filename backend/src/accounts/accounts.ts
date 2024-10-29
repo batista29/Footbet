@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response } from "express";
-import { RowDataPacket, FieldPacket } from 'mysql2';
+import { RowDataPacket, FieldPacket, ResultSetHeader } from 'mysql2';
 
 export namespace AccountsHandler {
 
@@ -25,20 +25,36 @@ export namespace AccountsHandler {
         birth_date: string;
     };
 
+    // Gera uma string de 10 caracteres aleatórios
+    function generateRandomString(length: number): string {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            result += characters[randomIndex];
+        }
+
+        return result;
+    }
+
     // Função para salvar uma nova conta
-    export async function saveNewAccount(newAccount: UserAccount): Promise<number | undefined> {
+    export async function saveNewAccount(newAccount: UserAccount, req: Request, res: Response): Promise<string | undefined> {
+        const token = generateRandomString(32);
         return await new Promise((resolve, reject) => {
             if (newAccount) {
                 const conn = connectDatabase();
                 conn.query(
-                    `INSERT INTO User(user_id, full_name, username, email,password_user, birth_date)
-                    VALUES (${newAccount.user_id}, '${newAccount.full_name}','${newAccount.username}',
-                    '${newAccount.email}', '${newAccount.password}', '${newAccount.birth_date}');`,
-                    function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
+                    `INSERT INTO User(user_id, full_name, username, email, password_user, token, birth_date, type_user)
+                    VALUES (DEFAULT, '${newAccount.full_name}','${newAccount.username}',
+                    '${newAccount.email}', '${newAccount.password}', '${token}' ,'${newAccount.birth_date}', 'comum');`,
+                    function (err: Error, data: RowDataPacket[], fields: FieldPacket, result: ResultSetHeader) {
                         if (!err) {
-                            resolve(newAccount.user_id);
+                            resolve(token);
+                        } else {
+                            res.status(500).send('Conta já existente ou com informações inadequadas');
+                            reject(err);
                         }
-                        reject(null);
                     });
             }
         })
@@ -54,7 +70,7 @@ export namespace AccountsHandler {
         const email = req.get('email');
         const birthDate = req.get('birthdate');
 
-        if (userId && fullName && username && password && email && birthDate) {
+        if (fullName && username && password && email && birthDate) {
             const newAccount: UserAccount = {
                 user_id: userId,
                 full_name: fullName,
@@ -63,10 +79,12 @@ export namespace AccountsHandler {
                 email: email,
                 birth_date: birthDate
             };
-            const ID = await saveNewAccount(newAccount);
 
-            if (ID) {
-                res.status(200).send(`Nova conta adicionada.`);
+            const token = await saveNewAccount(newAccount, req, res);
+            console.log(token);
+
+            if (token) {
+                res.status(200).send(`Nova conta adicionada. Token: ` + token);
             } else {
                 res.status(500).send("Erro ao criar a conta. Tente novamente.");
             }
