@@ -57,6 +57,6 @@ CREATE TABLE Participa(
 SELECT * FROM User;
 SELECT * FROM Transacao;
 
--- SELECT SUM(value) as 'saldo' FROM Transacao WHERE user_id = 2;
+SELECT SUM(value) as 'saldo' FROM Transacao WHERE user_id = 2;
 
 SELECT token FROM User WHERE email = 'natabatista2908@gmail.com' AND password_user = '123';
