@@ -23,7 +23,7 @@ routes.post('/addFunds', walletHandler.addFunds); //Ok
 
 //eventos
 routes.post('/addNewEvent', EventsHandler.addNewEventRoute); //ok
-routes.post('/evaluateNewEvent', EventsHandler.evaluateNewEvent);
+routes.put('/evaluateNewEvent', EventsHandler.evaluateNewEvent);
 routes.post('/finishEvent', EventsHandler.finishEventRoute);//ok
 routes.post('/betOnEvent', EventsHandler.betOnEvent);
 routes.post('/deleteEvent', EventsHandler.deleteEventRoute);// ok

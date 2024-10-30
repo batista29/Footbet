@@ -35,181 +35,6 @@ export namespace EventsHandler {
         email: string;
     };
 
-    //Função para avaliar um novo evento
-    export const evaluateNewEvent: RequestHandler = async (req, res) => {
-        const id_evento = req.get('id_evento');
-        const status = req.get('status');
-        const rejectionReason = req.get('rejectioReason');
-
-        if (!id_evento || !status || (status !== "aceito" && status !== "rejeitado")) {
-            return res.status(400).send('Dados inválidos.');
-        }
-        const connection = await connectDatabase();
-        try {
-            const eventResult = await connection.execute('SELECT id_criador FROM Evento WHERE id_evento = :id_evento', { id_evento });
-            const eventRows = eventResult.rows as Array<{ ID_CRIADOR: string }>;
-
-            if (eventRows.length === 0) {
-                return res.status(404).send('Evento não encontrado.');
-            }
-            const id_criador = eventRows[0].ID_CRIADOR;
-            const emailResult = await connection.execute('SELECT email FROM User WHERE token = :id_criador', { id_criador });
-            const emailRows = emailResult.rows as Array<{ EMAIL: string }>;
-
-            if (emailRows.length === 0) {
-                return res.status(404).send('E-mail do criador não encontrado.');
-            }
-            const email = emailRows[0].EMAIL;
-
-            if (status === 'rejeitado') {
-                await connection.execute('UPDATE Evento SET status = :status WHERE id_evento = :id_evento',
-                    { status, reason: rejectionReason, id_evento });
-                const transporter = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 587,
-                    secure: false,
-                    auth: {
-                        user: 'testepuccamp@gmail.com',
-                        pass: 'ugjaxfamlczvwuae',
-                    },
-                });
-                await transporter.sendMail({
-                    from: 'testepuccamp@gmail.com',
-                    to: email,
-                    subject: 'Seu evento foi reprovado!',
-                    text: `Seu evento foi reprovado pelo seguinte motivo: ${rejectionReason}`,
-                });
-                console.log(`Email enviado para ${email}`);
-            }
-            // Para o status "aceito"
-            await connection.execute('UPDATE Evento SET status = :status WHERE id_evento = :id_evento', { status: 'aceito', id_evento });
-            return res.status(200).send(`Evento com ID ${id_evento} foi aprovado e está disponível para divulgação.`);
-        } catch (error) {
-            console.error('Erro ao avaliar o evento:', error);
-            res.status(500).send('Erro interno ao processar o pedido.');
-        } finally {
-            await connection.close();
-        }
-    };
-
-    async function seeBalance(id_user: number) {
-        return await new Promise((resolve, reject) => {
-            if (id_user) {
-                let conn = connectDatabase();
-                conn.query(`SELECT SUM(value) as 'saldo' FROM Transacao WHERE user_id = ${id_user};`,
-                    function (err: Error, data: RowDataPacket[]) {
-                    if (!err || data && data.length > 0) {
-                        resolve(data[0].saldo);
-                    }
-                    reject(null);
-                });
-            }
-        })
-    }
-    
-    export const withdrawFunds: RequestHandler = async (req, res) => {
-        const id_wallet = Number(req.get('id_wallet'));
-        const id_user = Number(req.get('id_user'));
-        let value = Number(req.get('value'));
-        const type = 'saque';
-        const balance = Number (await seeBalance(id_user));
-        const connection = await connectDatabase();
-    
-        //verificando se nao vem campo vazio
-        if (id_wallet && id_user && value && type && balance >= value && Math.sign(value) !== -1) {
-            let conn = connectDatabase();
-            conn.query(`INSERT INTO Transacao (id_wallet,user_id,value,type) VALUES(${id_wallet},${id_user}, -${value}, '${type}');`, function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
-                if (!err) {
-                    res.statusCode = 200;
-                    //retornando 1, que é a quantidade de campos alterados, se nao retornar 1 é porque deu erro
-                    res.send(fields);
-                } else {
-                    //erro caso nao envie a informações corretas para o banco
-                    res.statusCode = 400;
-                    res.send("Error")
-                }
-            });
-        // Calcular a taxa de saque com base no valor
-        let feePercentage;
-        try{
-            if (value <= 100) {
-                feePercentage = 0.04;
-            } else if (value <= 1000) {
-                feePercentage = 0.03;
-            } else if (value <= 5000) {
-                feePercentage = 0.02;
-            } else if (value <= 100000) {
-                feePercentage = 0.01;
-            } else {
-                feePercentage = 0;
-            }
-    
-            const fee = value * feePercentage;
-            const netvalue = value + fee;
-    
-            if (netvalue > balance) {
-                res.status(400).send('Saldo insuficiente após a aplicação da taxa.');
-                return;
-            }
-            // Inserir a transação na tabela Transacao
-            await connection.execute(`INSERT INTO Transacao (id_wallet, value, type, date_transation) VALUES (:id_wallet, -(:value), :type, SYSDATE)`,{id_wallet, value, type: 'saque'});
-            await connection.commit();
-            res.status(200).send(`Saque de R$${value.toFixed(2)} realizado com sucesso! Taxa aplicada: R$${fee.toFixed(2)}". Saldo atual: R$${balance.toFixed(2)}`)
-        } catch (error) {
-            console.error("Erro durante o saque:", error);
-            res.status(500).send("Erro ao processar o saque.");
-        } finally {
-            await connection.close();
-        }
-    }
-    };
-    
-    // Função para apostar em um evento
-    export const betOnEvent: RequestHandler = async (req, res) => {
-        const connection = await connectDatabase();
-        try {
-            const id_criador = Number(req.get('id_criador'));
-            const id_evento = Number(req.get('id_evento'));
-            let value = Number(req.get('value'));
-            const aposta = req.get('aposta');
-    
-            // Verifica se o usuário existe
-            const userResult = await connection.execute(`SELECT * FROM User WHERE id_criador = :id_criador`, { id_criador });
-            const userRows = userResult as Array<{ balance: number }>;
-    
-            if (userRows.length === 0) {
-                return res.status(404).send("Usuário não encontrado.");
-            }
-            const user = userRows[0];
-            const eventResult = await connection.execute(`SELECT * FROM Evento WHERE id = :id_evento`, { id_evento });
-            const eventRows = eventResult as Array<{ status: string }>;
-    
-            if (eventRows.length === 0 || eventRows[0].status !== "aceito") {
-                return res.status(404).send("Evento não encontrado ou não disponível para apostas.");
-            }
-            // Verifica saldo do usuário
-            if (user.balance < value) { 
-                return res.status(400).send("Saldo insuficiente! Por favor, faça um crédito na sua carteira.");
-            }
-            // Registrar aposta
-            await connection.execute(`INSERT INTO Transacao (event_id, id_criador, value, aposta) VALUES (:id_evento, :id_criador, -:value, :aposta)`,
-                { id_evento, id_criador, value, aposta });
-            res.status(200).send(`Aposta de R$${value} realizada no evento "${id_evento}". Saldo atual: R$${user.balance.toFixed(2)}`)
-            await connection.commit();
-        } catch (err) {
-            console.error(err);
-            res.status(500).send("Erro ao realizar a aposta.");
-        } finally {
-            if (connection) {
-                try {
-                    await connection.close();
-                } catch (err) {
-                    console.error(err);
-                }
-            }
-        }
-    };
-
 // Função para salvar um novo evento no banco de dados -
 async function saveNewEvent(ev: Event): Promise <void> {
     let conn = await connectDatabase();
@@ -260,6 +85,222 @@ export const addNewEventRoute: RequestHandler = async (req, res) => {
     } catch (error) {
         console.error('Erro ao adicionar evento:', error);
         res.status(500).send('Erro interno ao adicionar evento.');
+    }
+};
+
+//Função para avaliar um novo evento
+export const evaluateNewEvent: RequestHandler = async (req, res) => {
+    const user_id = Number(req.get('user_id'));
+    const id_evento = Number(req.get('id_evento'));
+    const newStatus = req.get('status');
+    const rejectionReason = String(req.get('rejectionReason'));
+    
+    // Log para depuração
+    console.log({ user_id, id_evento, newStatus, rejectionReason });
+
+    // Validação inicial dos dados
+    if (!id_evento || !newStatus || (newStatus !== "aceito" && newStatus !== "rejeitado")) {
+        return res.status(400).send('Dados inválidos.');
+    }
+
+    const validRejectionReasons = [
+        'Texto confuso!',
+        'Texto inapropriado',
+        'Não respeita a política de privacidade ou os termos da plataforma!'
+    ];
+
+    // Validação do motivo de rejeição
+    if (newStatus === 'rejeitado' && !validRejectionReasons.includes(rejectionReason)) {
+        return res.status(400).send(`Motivo de reprovação inválido. Os motivos válidos são: 
+            ${validRejectionReasons.join(', ')}.`);
+    }
+
+    const connection = await connectDatabase();
+    try {
+        const type_user = await searchTypeUser(user_id);
+        
+        if (type_user === 'moderador') {
+            const [eventRows] = await connection.execute('SELECT id_criador FROM Evento WHERE id_evento = ?', [id_evento]);
+
+            if (eventRows.length === 0) {
+                return res.status(404).send('Evento não encontrado.');
+            }
+
+            const id_criador = eventRows[0].id_criador;
+            const [emailRows] = await connection.execute('SELECT email FROM User WHERE user_id = ?', [id_criador]);
+
+            if (emailRows.length === 0) {
+                return res.status(404).send('E-mail do criador não encontrado.');
+            }
+
+            const email = emailRows[0].email;
+
+            // Enviar email se o evento for rejeitado
+            if (newStatus.toLowerCase() === 'rejeitado') {
+                const transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: 'testepuccamp@gmail.com',
+                        pass: 'ugjaxfamlczvwuae',
+                    },
+                });
+
+                await transporter.sendMail({
+                    from: 'testepuccamp@gmail.com',
+                    to: email,
+                    subject: 'Seu evento foi reprovado!',
+                    text: `Seu evento foi reprovado pelo seguinte motivo: ${rejectionReason}`,
+                });
+
+                console.log(`Email enviado para ${email}`);
+            }
+
+            // Atualizar o status do evento
+            await connection.execute('UPDATE Evento SET status = ? WHERE id_evento = ?', [newStatus, id_evento]);
+            await connection.commit();
+            res.status(200).send('Evento atualizado com sucesso.');
+        } else {
+            res.status(403).send('Acesso proibido!');
+        }
+    } catch (error) {
+        console.error('Erro ao avaliar o evento:', error);
+        res.status(500).send('Erro interno ao processar o pedido.');
+    } finally {
+        await connection.close();
+    }
+};
+
+async function seeBalance(id_user: number): Promise<number> {
+    return new Promise(async (resolve, reject) => {
+        if (id_user) {
+            const conn = await connectDatabase();
+            conn.query(
+                `SELECT SUM(value) AS saldo FROM Transacao WHERE user_id = ?`, 
+                [id_user],
+                function (err: Error, data: RowDataPacket[]) {
+                    if (err || !data || data.length === 0) {
+                        reject(err || new Error("Saldo não encontrado."));
+                    } else {
+                        resolve(data[0].saldo);
+                    }
+                }
+            );
+        } else {
+            reject(new Error("ID do usuário inválido."));
+        }
+    });
+}
+
+export const withdrawFunds: RequestHandler = async (req, res) => {
+    const connection = await connectDatabase();
+
+    const id_wallet = Number(req.get('id_wallet'));
+    const id_user = Number(req.get('id_user'));
+    const value = Number(req.get('value'));
+    const type = 'saque';
+
+    try {
+        const balance = await seeBalance(id_user);
+        const connection = await connectDatabase();
+
+        // Verificação de campos e saldo
+        if (!id_wallet || !id_user || isNaN(value) || value <= 0 || balance < value) {
+            return res.status(400).send('Dados inválidos ou saldo insuficiente.');
+        }
+
+        // Calcular a taxa de saque
+        let feePercentage = 0;
+        if (value <= 100) {
+            feePercentage = 0.04;
+        } else if (value <= 1000) {
+            feePercentage = 0.03;
+        } else if (value <= 5000) {
+            feePercentage = 0.02;
+        } else if (value <= 100000) {
+            feePercentage = 0.01;
+        }
+
+        const fee = value * feePercentage;
+        const netValue = value + fee;
+
+        if (netValue > balance) {
+            return res.status(400).send('Saldo insuficiente após a aplicação da taxa.');
+        }
+
+        // Inserir a transação na tabela Transacao
+        await connection.execute(
+            `INSERT INTO Transacao (id_wallet, user_id, value, type) VALUES (?, ?, -?, ?)`, 
+            [id_wallet, id_user, value, type]
+        );
+
+        await connection.commit();
+        res.status(200).send(`Saque de R$${value.toFixed(2)} realizado com sucesso! Taxa aplicada: R$${fee.toFixed(2)}. Saldo atual: R$${(balance - value).toFixed(2)}`);
+    } catch (error) {
+        console.error("Erro ao processar o saque:", error);
+        res.status(500).send("Erro ao processar o saque.");
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error("Erro ao fechar a conexão:", err);
+            }
+        }
+    }
+};
+
+// Função para apostar em um evento
+export const betOnEvent: RequestHandler = async (req, res) => {
+    const connection = await connectDatabase();
+    try {
+        const user_id = Number(req.get('user_id'));
+        const qtd_cotas = Number(req.get('qtd_cotas'));
+        const id_evento = Number(req.get('id_evento'));
+        const value = Number(req.get('value'));
+        const aposta = req.get('aposta');
+
+        // Verifica se o usuário existe
+        const [userRows]: [RowDataPacket[], any] = await connection.execute(`SELECT * FROM User WHERE user_id = ?`, [user_id]);
+        if (userRows.length === 0) {
+            return res.status(404).send("Usuário não encontrado.");
+        }
+
+        const user = userRows[0];
+        
+        // Verifica se o evento existe e está aceito
+        const [eventRows]: [RowDataPacket[], any] = await connection.execute(`SELECT * FROM Evento WHERE id_evento = ?`, [id_evento]);
+        if (eventRows.length === 0 || eventRows[0].status !== "aceito") {
+            return res.status(404).send("Evento não encontrado ou não disponível para apostas.");
+        }
+
+        // Verifica saldo do usuário
+        if (user.balance < value) { 
+            return res.status(400).send("Saldo insuficiente! Por favor, faça um crédito na sua carteira.");
+        }
+
+        // Registrar a aposta
+        await connection.execute(
+            `INSERT INTO Participa (id_participante, id_evento, qtd_cotas, total_apostado, aposta) VALUES (?, ?, ?, ?, ?)`,
+            [user_id, id_evento, qtd_cotas, value, aposta]
+        );
+
+        await connection.commit();
+
+        const newBalance = user.balance - value; // Calcule o novo saldo
+        res.status(200).send(`Aposta de R$${value.toFixed(2)} realizada no evento "${id_evento}". Saldo atual: R$${newBalance.toFixed(2)}`);
+    } catch (err) {
+        console.error("Erro ao realizar a aposta:", err);
+        res.status(500).send("Erro ao realizar a aposta.");
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error("Erro ao fechar a conexão:", err);
+            }
+        }
     }
 };
 
