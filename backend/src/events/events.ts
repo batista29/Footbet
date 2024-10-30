@@ -92,7 +92,7 @@ export namespace EventsHandler {
         }
     };
 
-    /*async function seeBalance(id_user: number) {
+    async function seeBalance(id_user: number) {
         return await new Promise((resolve, reject) => {
             if (id_user) {
                 let conn = connectDatabase();
@@ -151,16 +151,10 @@ export namespace EventsHandler {
                 res.status(400).send('Saldo insuficiente após a aplicação da taxa.');
                 return;
             }
-            // Atualizar o saldo da carteira após o saque
-            const newBalance = balance - netvalue;
-            await connection.execute('UPDATE Transacao SET BALANCE = :newBalance WHERE id_wallet = :id_wallet',{ newBalance, id_wallet });
-    
             // Inserir a transação na tabela Transacao
-            await connection.execute(
-                `INSERT INTO Transacao (id_wallet, value, type, date_transation) VALUES (:id_wallet, :value, :type, SYSDATE)`,{id_wallet, value, type: 'saque'}
-            );
+            await connection.execute(`INSERT INTO Transacao (id_wallet, value, type, date_transation) VALUES (:id_wallet, -(:value), :type, SYSDATE)`,{id_wallet, value, type: 'saque'});
             await connection.commit();
-            res.status(200).send(`Saque de R$${value.toFixed(2)} realizado com sucesso! Taxa aplicada: R$${fee.toFixed(2)}". Saldo atual: R$${id_user.balance.toFixed(2)}`)
+            res.status(200).send(`Saque de R$${value.toFixed(2)} realizado com sucesso! Taxa aplicada: R$${fee.toFixed(2)}". Saldo atual: R$${balance.toFixed(2)}`)
         } catch (error) {
             console.error("Erro durante o saque:", error);
             res.status(500).send("Erro ao processar o saque.");
@@ -168,7 +162,7 @@ export namespace EventsHandler {
             await connection.close();
         }
     }
-    };*/
+    };
     
     // Função para apostar em um evento
     export const betOnEvent: RequestHandler = async (req, res) => {
@@ -177,7 +171,7 @@ export namespace EventsHandler {
             const id_criador = Number(req.get('id_criador'));
             const id_evento = Number(req.get('id_evento'));
             let value = Number(req.get('value'));
-            const prediction = req.get('prediction') as 'Sim' | 'Não';
+            const aposta = req.get('aposta');
     
             // Verifica se o usuário existe
             const userResult = await connection.execute(`SELECT * FROM User WHERE id_criador = :id_criador`, { id_criador });
@@ -197,11 +191,9 @@ export namespace EventsHandler {
             if (user.balance < value) { 
                 return res.status(400).send("Saldo insuficiente! Por favor, faça um crédito na sua carteira.");
             }
-            // Registrar aposta e deduzir saldo do usuário
-            await connection.execute(`INSERT INTO Transacao (event_id, id_criador, value, prediction) VALUES (:id_evento, :id_criador, :value, :prediction)`,
-                { id_evento, id_criador, value, prediction });
-            // Atualizar saldo do usuário
-            await connection.execute(`UPDATE Transacao SET balance = balance - :value WHERE token = :token`, { value, id_criador });
+            // Registrar aposta
+            await connection.execute(`INSERT INTO Transacao (event_id, id_criador, value, aposta) VALUES (:id_evento, :id_criador, -:value, :aposta)`,
+                { id_evento, id_criador, value, aposta });
             res.status(200).send(`Aposta de R$${value} realizada no evento "${id_evento}". Saldo atual: R$${user.balance.toFixed(2)}`)
             await connection.commit();
         } catch (err) {
@@ -327,11 +319,11 @@ export async function findBettors(id: number, betResult: string): Promise<any[]>
     const conn = await connectDatabase();
     try {
         let query = '';
-        if (betResult.toLowerCase() === 's') {
+        if (betResult.toLowerCase() === 'Sim') {
             query = `SELECT id_participante FROM Participa WHERE id_evento = ? AND aposta = ?`;
             const result = await conn.query(query, [id, 's']);
             return result[0] || []; // Acesso à primeira linha do resultado
-        } else if (betResult.toLowerCase() === 'n') {
+        } else if (betResult.toLowerCase() === 'Não') {
             query = `SELECT id_participante FROM Participa WHERE id_evento = ? AND aposta = ?`;
             const result = await conn.query(query, [id, 'n']);
             return result[0] || []; // Acesso à primeira linha do resultado
