@@ -40,6 +40,7 @@ CREATE TABLE Evento(
     fimApostas datetime,
     valor_cota decimal(10,2),
     status varchar(20) Default 'analise',
+    email varchar(50),
     FOREIGN KEY(id_criador) REFERENCES User(user_id)
 );
 
