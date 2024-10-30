@@ -255,40 +255,41 @@ export const withdrawFunds: RequestHandler = async (req, res) => {
 export const betOnEvent: RequestHandler = async (req, res) => {
     const connection = await connectDatabase();
     try {
-        const user_id = Number(req.get('user_id'));
+        const email = req.get('email'); 
         const qtd_cotas = Number(req.get('qtd_cotas'));
         const id_evento = Number(req.get('id_evento'));
         const value = Number(req.get('value'));
         const aposta = req.get('aposta');
 
-        // Verifica se o usuário existe
-        const [userRows]: [RowDataPacket[], any] = await connection.execute(`SELECT * FROM User WHERE user_id = ?`, [user_id]);
+        // Verifica se o usuário existe pelo email
+        const [userRows]: [RowDataPacket[], any] = await connection.execute(`SELECT * FROM User WHERE email = ?`, [email]);
         if (userRows.length === 0) {
             return res.status(404).send("Usuário não encontrado.");
         }
 
         const user = userRows[0];
-        
+
         // Verifica se o evento existe e está aceito
         const [eventRows]: [RowDataPacket[], any] = await connection.execute(`SELECT * FROM Evento WHERE id_evento = ?`, [id_evento]);
         if (eventRows.length === 0 || eventRows[0].status !== "aceito") {
             return res.status(404).send("Evento não encontrado ou não disponível para apostas.");
         }
 
-        // Verifica saldo do usuário
-        if (user.balance < value) { 
+        // Verifica saldo do usuário usando a função seeBalance
+        const currentBalance = await seeBalance(user.user_id);
+        if (currentBalance < value) { 
             return res.status(400).send("Saldo insuficiente! Por favor, faça um crédito na sua carteira.");
         }
 
         // Registrar a aposta
         await connection.execute(
             `INSERT INTO Participa (id_participante, id_evento, qtd_cotas, total_apostado, aposta) VALUES (?, ?, ?, ?, ?)`,
-            [user_id, id_evento, qtd_cotas, value, aposta]
+            [user.user_id, id_evento, qtd_cotas, value, aposta]
         );
 
         await connection.commit();
 
-        const newBalance = user.balance - value; // Calcule o novo saldo
+        const newBalance = currentBalance - value; // Calcule o novo saldo
         res.status(200).send(`Aposta de R$${value.toFixed(2)} realizada no evento "${id_evento}". Saldo atual: R$${newBalance.toFixed(2)}`);
     } catch (err) {
         console.error("Erro ao realizar a aposta:", err);
@@ -304,6 +305,12 @@ export const betOnEvent: RequestHandler = async (req, res) => {
     }
 };
 
+// Função para obter o saldo do usuário
+const getUserBalance = async (user_id: number, connection: any): Promise<number> => {
+    const [balanceRows]: [RowDataPacket[], any] = await connection.execute(`SELECT SUM(value) AS saldo FROM Transacao WHERE user_id = ?`, [user_id]);
+    return balanceRows.length > 0 ? balanceRows[0].saldo : 0;
+};
+
 // Função para excluir um evento (alterar status para 'deleted')
 export async function deleteEvent(id: number): Promise<void> {
     const conn = await connectDatabase();
@@ -316,7 +323,7 @@ export async function searchTypeUser(id_user: number) : Promise<string >{
     const connection = await connectDatabase();
     try{
     const [rows] = await connection.query(
-        `SELECT type_user FROM Usuario WHERE user_id = ?`, [id_user]
+        `SELECT type_user FROM User WHERE user_id = ?`, [id_user]
     );
 
     // Verifica se há resultados
