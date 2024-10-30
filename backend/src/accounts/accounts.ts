@@ -51,7 +51,8 @@ export namespace AccountsHandler {
                     function (err: Error, data: RowDataPacket[], fields: FieldPacket, result: ResultSetHeader) {
                         if (!err) {
                             resolve(token);
-                        } else {
+                        }
+                        else {
                             res.status(500).send('Conta já existente ou com informações inadequadas');
                             reject(err);
                         }
@@ -59,6 +60,22 @@ export namespace AccountsHandler {
             }
         })
     }
+    
+    //funcao para verificar se é maior de idade
+    function validAge(birthDate: string): boolean {
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDifference = today.getMonth() - birth.getMonth();
+    
+        // Ajuste da idade se o mês e o dia de nascimento ainda não ocorreram este ano
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+    
+        return age >= 18;
+    }
+   
 
     // Função para tratar o cadastro
     export const signUp: RequestHandler = async (req: Request, res: Response) => {
@@ -69,6 +86,13 @@ export namespace AccountsHandler {
         const password = req.get('password');
         const email = req.get('email');
         const birthDate = req.get('birthdate');
+
+        if (fullName && username && password && email && birthDate) {
+            if (!validAge(birthDate)) {
+                res.status(400).send("O usuário deve ser maior de idade.");
+                return;
+            }
+        }
 
         if (fullName && username && password && email && birthDate) {
             const newAccount: UserAccount = {
@@ -85,10 +109,12 @@ export namespace AccountsHandler {
 
             if (token) {
                 res.status(200).send(`Nova conta adicionada. Token: ` + token);
-            } else {
+            } 
+            else {
                 res.status(500).send("Erro ao criar a conta. Tente novamente.");
             }
-        } else {
+        }
+        else {
             res.status(400).send("Parâmetros inválidos ou faltantes.");
         }
     };
@@ -119,10 +145,12 @@ export namespace AccountsHandler {
             const token = await verifyAccount(email, password);
             if (token) {
                 res.status(200).send("Login efetuado com sucesso. Seu token: " + token);
-            } else {
+            }
+            else {
                 res.status(401).send("Email ou senha incorretos.");
             }
-        } else {
+        } 
+        else {
             res.status(400).send("Parâmetros inválidos ou faltantes.");
         }
     };
