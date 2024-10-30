@@ -172,13 +172,13 @@ export const evaluateNewEvent: RequestHandler = async (req, res) => {
     }
 };
 
-async function seeBalance(id_user: number): Promise<number> {
+async function seeBalance(user_id: number): Promise<number> {
     return new Promise(async (resolve, reject) => {
-        if (id_user) {
+        if (user_id) {
             const conn = await connectDatabase();
             conn.query(
                 `SELECT SUM(value) AS saldo FROM Transacao WHERE user_id = ?`, 
-                [id_user],
+                [user_id],
                 function (err: Error, data: RowDataPacket[]) {
                     if (err || !data || data.length === 0) {
                         reject(err || new Error("Saldo não encontrado."));
@@ -197,16 +197,16 @@ export const withdrawFunds: RequestHandler = async (req, res) => {
     const connection = await connectDatabase();
 
     const id_wallet = Number(req.get('id_wallet'));
-    const id_user = Number(req.get('id_user'));
+    const user_id = Number(req.get('id_user'));
     const value = Number(req.get('value'));
     const type = 'saque';
 
     try {
-        const balance = await seeBalance(id_user);
+        const balance = await seeBalance(user_id);
         const connection = await connectDatabase();
 
         // Verificação de campos e saldo
-        if (!id_wallet || !id_user || isNaN(value) || value <= 0 || balance < value) {
+        if (!id_wallet || !user_id|| isNaN(value) || value <= 0 || balance < value) {
             return res.status(400).send('Dados inválidos ou saldo insuficiente.');
         }
 
@@ -232,7 +232,7 @@ export const withdrawFunds: RequestHandler = async (req, res) => {
         // Inserir a transação na tabela Transacao
         await connection.execute(
             `INSERT INTO Transacao (id_wallet, user_id, value, type) VALUES (?, ?, -?, ?)`, 
-            [id_wallet, id_user, value, type]
+            [id_wallet, user_id, value, type]
         );
 
         await connection.commit();
@@ -255,29 +255,51 @@ export const withdrawFunds: RequestHandler = async (req, res) => {
 export const betOnEvent: RequestHandler = async (req, res) => {
     const connection = await connectDatabase();
     try {
+        const user_id = req.get('user_id'); 
+        console.log("Id do usuario:", user_id);
+
         const email = req.get('email'); 
+        console.log("Email do apostador:", email);
+
         const qtd_cotas = Number(req.get('qtd_cotas'));
+        console.log("Quantidade de cotas:", qtd_cotas);
+
         const id_evento = Number(req.get('id_evento'));
+        console.log("ID do evento:", id_evento);
+
         const value = Number(req.get('value'));
+        console.log("Valor da aposta:", value);
+
         const aposta = req.get('aposta');
+        console.log("Tipo de aposta:", aposta);
 
         // Verifica se o usuário existe pelo email
         const [userRows]: [RowDataPacket[], any] = await connection.execute(`SELECT * FROM User WHERE email = ?`, [email]);
+        console.log("Resultados da busca de usuário:", userRows);
+
         if (userRows.length === 0) {
+            console.log("Usuário não encontrado.");
             return res.status(404).send("Usuário não encontrado.");
         }
 
         const user = userRows[0];
+        console.log("Usuário encontrado:", user);
 
         // Verifica se o evento existe e está aceito
         const [eventRows]: [RowDataPacket[], any] = await connection.execute(`SELECT * FROM Evento WHERE id_evento = ?`, [id_evento]);
+        console.log("Resultados da busca de evento:", eventRows);
+
         if (eventRows.length === 0 || eventRows[0].status !== "aceito") {
+            console.log("Evento não encontrado ou não disponível para apostas.");
             return res.status(404).send("Evento não encontrado ou não disponível para apostas.");
         }
 
         // Verifica saldo do usuário usando a função seeBalance
-        const currentBalance = await seeBalance(user.user_id);
-        if (currentBalance < value) { 
+        const balance = await seeBalance(user.user_id);
+        console.log("Saldo atual do usuário:", balance);
+
+        if (balance < value) { 
+            console.log("Saldo insuficiente! Saldo disponível:", balance, "Valor da aposta:", value);
             return res.status(400).send("Saldo insuficiente! Por favor, faça um crédito na sua carteira.");
         }
 
@@ -289,7 +311,8 @@ export const betOnEvent: RequestHandler = async (req, res) => {
 
         await connection.commit();
 
-        const newBalance = currentBalance - value; // Calcule o novo saldo
+        const newBalance = balance - value; // Calcule o novo saldo
+        console.log("Novo saldo após a aposta:", newBalance);
         res.status(200).send(`Aposta de R$${value.toFixed(2)} realizada no evento "${id_evento}". Saldo atual: R$${newBalance.toFixed(2)}`);
     } catch (err) {
         console.error("Erro ao realizar a aposta:", err);
@@ -298,6 +321,7 @@ export const betOnEvent: RequestHandler = async (req, res) => {
         if (connection) {
             try {
                 await connection.close();
+                console.log("Conexão com o banco de dados fechada.");
             } catch (err) {
                 console.error("Erro ao fechar a conexão:", err);
             }
