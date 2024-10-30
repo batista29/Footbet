@@ -267,11 +267,14 @@ export const betOnEvent: RequestHandler = async (req, res) => {
         const id_evento = Number(req.get('id_evento'));
         console.log("ID do evento:", id_evento);
 
-        const value = Number(req.get('value'));
-        console.log("Valor da aposta:", value);
+        const valor_cota = Number(req.get('valor_cota'));
+        console.log("Valor da cota:", valor_cota);
 
         const aposta = req.get('aposta');
         console.log("Tipo de aposta:", aposta);
+
+        const value = valor_cota * qtd_cotas;
+        console.log("Valor da aposta:", value);
 
         // Verifica se o usuário existe pelo email
         const [userRows]: [RowDataPacket[], any] = await connection.execute(`SELECT * FROM User WHERE email = ?`, [email]);
@@ -295,7 +298,7 @@ export const betOnEvent: RequestHandler = async (req, res) => {
         }
 
         // Verifica saldo do usuário usando a função seeBalance
-        const balance = await getUserBalance(user.user_id, connection);
+        const balance = await seeBalance(user.user_id);
         console.log("Saldo atual do usuário:", balance);
 
         if (balance < value) { 
