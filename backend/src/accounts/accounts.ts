@@ -1,3 +1,4 @@
+import { error } from "console";
 import { Request, RequestHandler, Response } from "express";
 import { RowDataPacket, FieldPacket, ResultSetHeader } from 'mysql2';
 
@@ -54,28 +55,28 @@ export namespace AccountsHandler {
                         }
                         else {
                             res.status(500).send('Conta já existente ou com informações inadequadas');
-                            reject(err);
+                            resolve(err.name);
                         }
                     });
             }
         })
     }
-    
+
     //funcao para verificar se é maior de idade
     function validAge(birthDate: string): boolean {
         const today = new Date();
         const birth = new Date(birthDate);
         let age = today.getFullYear() - birth.getFullYear();
         const monthDifference = today.getMonth() - birth.getMonth();
-    
+
         // Ajuste da idade se o mês e o dia de nascimento ainda não ocorreram este ano
         if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birth.getDate())) {
             age--;
         }
-    
+
         return age >= 18;
     }
-   
+
 
     // Função para tratar o cadastro
     export const signUp: RequestHandler = async (req: Request, res: Response) => {
@@ -86,6 +87,8 @@ export namespace AccountsHandler {
         const password = req.get('password');
         const email = req.get('email');
         const birthDate = req.get('birthdate');
+
+        console.log(fullName, username, password, email, birthDate)
 
         if (fullName && username && password && email && birthDate) {
             if (!validAge(birthDate)) {
@@ -109,7 +112,7 @@ export namespace AccountsHandler {
 
             if (token) {
                 res.status(200).send(`Nova conta adicionada. Token: ` + token);
-            } 
+            }
             else {
                 res.status(500).send("Erro ao criar a conta. Tente novamente.");
             }
@@ -120,7 +123,7 @@ export namespace AccountsHandler {
     };
 
     // Função para verificar se a conta existe e as informações estão corretas
-    async function verifyAccount(email: string, password: string): Promise<string | null> {
+    async function verifyAccount(email: string, password: string): Promise<string | number> {
         return await new Promise((resolve, reject) => {
             if (email && password) {
                 const conn = connectDatabase();
@@ -129,8 +132,9 @@ export namespace AccountsHandler {
                     function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
                         if (!err && data.length > 0) {
                             resolve(data[0].token);
+                        } else {
+                            resolve(data.length);
                         }
-                        reject(null);
                     });
             }
         })
@@ -143,13 +147,14 @@ export namespace AccountsHandler {
 
         if (email && password) {
             const token = await verifyAccount(email, password);
+
             if (token) {
                 res.status(200).send("Login efetuado com sucesso. Seu token: " + token);
             }
             else {
                 res.status(401).send("Email ou senha incorretos.");
             }
-        } 
+        }
         else {
             res.status(400).send("Parâmetros inválidos ou faltantes.");
         }
