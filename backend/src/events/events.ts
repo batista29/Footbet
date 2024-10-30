@@ -295,7 +295,7 @@ export const betOnEvent: RequestHandler = async (req, res) => {
         }
 
         // Verifica saldo do usuário usando a função seeBalance
-        const balance = await seeBalance(user.user_id);
+        const balance = await getUserBalance(user.user_id, connection);
         console.log("Saldo atual do usuário:", balance);
 
         if (balance < value) { 
