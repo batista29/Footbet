@@ -40,7 +40,7 @@ export namespace AccountsHandler {
     }
 
     // Função para salvar uma nova conta
-    export async function saveNewAccount(newAccount: UserAccount, req: Request, res: Response): Promise<string | undefined> {
+    export async function saveNewAccount(newAccount: UserAccount): Promise<string | undefined> {
         const token = generateRandomString(32);
         return await new Promise((resolve, reject) => {
             if (newAccount) {
@@ -54,7 +54,7 @@ export namespace AccountsHandler {
                             resolve(token);
                         }
                         else {
-                            res.status(500).send('Conta já existente ou com informações inadequadas');
+                            // res.status(500).send('Conta já existente ou com informações inadequadas');
                             resolve(err.name);
                         }
                     });
@@ -88,8 +88,6 @@ export namespace AccountsHandler {
         const email = req.get('email');
         const birthDate = req.get('birthdate');
 
-        console.log(fullName, username, password, email, birthDate)
-
         if (fullName && username && password && email && birthDate) {
             if (!validAge(birthDate)) {
                 res.status(400).send("O usuário deve ser maior de idade.");
@@ -107,14 +105,14 @@ export namespace AccountsHandler {
                 birth_date: birthDate
             };
 
-            const token = await saveNewAccount(newAccount, req, res);
+            const token = await saveNewAccount(newAccount);
             console.log(token);
 
-            if (token) {
+            if (token !== "Error") {
                 res.status(200).send(`Nova conta adicionada. Token: ` + token);
             }
             else {
-                res.status(500).send("Erro ao criar a conta. Tente novamente.");
+                res.status(500).send("Conta já existente ou com informações inadequadas!");
             }
         }
         else {
