@@ -22,11 +22,12 @@ routes.post('/login', AccountsHandler.login); //Ok
 routes.post('/addFunds', walletHandler.addFunds); //Ok
 routes.post('/withdrawFunds', walletHandler.withdrawFunds); //Ok, não alterem.
 
-
-// NÃO TESTADAS
 //eventos
 routes.post('/addNewEvent', EventsHandler.addNewEventRoute); //ok
 routes.put('/evaluateNewEvent', EventsHandler.evaluateNewEvent); //ok
+
+
+// NÃO TESTADAS
 routes.post('/finishEvent', EventsHandler.finishEventRoute);//ok
 routes.post('/betOnEvent', EventsHandler.betOnEvent);
 routes.post('/deleteEvent', EventsHandler.deleteEventRoute);// ok

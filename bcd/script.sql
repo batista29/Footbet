@@ -49,7 +49,7 @@ CREATE TABLE Participa(
     id_evento INTEGER NOT NULL,
     qtd_cotas integer,
     total_apostado decimal(10,2),
-    aposta varchar(2),
+    aposta varchar(3),
     CONSTRAINT ck_aposta CHECK (aposta ='Sim' or aposta = 'Não'),
     FOREIGN KEY(id_participante) REFERENCES User(user_id),
     FOREIGN KEY(id_evento) REFERENCES Evento(id_evento)
