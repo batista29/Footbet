@@ -13,14 +13,17 @@ routes.get('/', (req: Request, res: Response) => {
     res.send('Acesso não permitido.');
 });
 
+// TESTADAS 30/10/2024
 // vamos organizar as rotas em outro local 
 routes.post('/signUp', AccountsHandler.signUp); //Ok
 routes.post('/login', AccountsHandler.login); //Ok
 
 // Transações
 routes.post('/addFunds', walletHandler.addFunds); //Ok
-//routes.post('/withdrawFunds', walletHandler.withdrawFunds); //tem um erro
+routes.post('/withdrawFunds', walletHandler.withdrawFunds); //Ok, não alterem.
 
+
+// NÃO TESTADAS
 //eventos
 routes.post('/addNewEvent', EventsHandler.addNewEventRoute); //ok
 routes.put('/evaluateNewEvent', EventsHandler.evaluateNewEvent); //ok

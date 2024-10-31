@@ -1,4 +1,3 @@
-import { error } from "console";
 import { Request, RequestHandler, Response } from "express";
 import { RowDataPacket, FieldPacket, ResultSetHeader } from 'mysql2';
 
@@ -54,7 +53,6 @@ export namespace AccountsHandler {
                             resolve(token);
                         }
                         else {
-                            // res.status(500).send('Conta já existente ou com informações inadequadas');
                             resolve(err.name);
                         }
                     });
@@ -106,7 +104,6 @@ export namespace AccountsHandler {
             };
 
             const token = await saveNewAccount(newAccount);
-            console.log(token);
 
             if (token !== "Error") {
                 res.status(200).send(`Nova conta adicionada. Token: ` + token);
