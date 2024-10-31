@@ -109,7 +109,7 @@ export namespace EventsHandler {
         console.log({ user_id, id_evento, newStatus, rejectionReason });
 
         // Validação inicial dos dados
-        if (!id_evento || !newStatus || (newStatus !== "aceito" && newStatus !== "rejeitado")) {
+        if (!id_evento || !newStatus || (newStatus !== "ativo" && newStatus !== "rejeitado")) {
             return res.status(400).send('Dados inválidos.');
         }
 
@@ -190,6 +190,7 @@ export namespace EventsHandler {
             const email = req.get('email');
             const qtd_cotas = Number(req.get('qtd_cotas'));
             const id_evento = Number(req.get('id_evento'));
+            console.log('evento id: ', id_evento);
             const valor_cota = Number(req.get('valor_cota'));
             const aposta = req.get('aposta');
 
@@ -213,7 +214,7 @@ export namespace EventsHandler {
 
             // função esta parando aqui
 
-            if (eventRows.length === 0 || eventRows[0].status !== "aceito") {
+            if (eventRows.length === 0 || eventRows[0].status !== "ativo") {
                 console.log("Evento não encontrado ou não disponível para apostas.");
                 return res.status(404).send("Evento não encontrado ou não disponível para apostas.");
             }
@@ -274,13 +275,13 @@ export namespace EventsHandler {
 
             // Verifica se há resultados
             if (rows.length > 0) {
-                return rows[0].type_user; // Retorna o valor do campo type_user
+                return rows[0].type_user; 
             } else {
-                return 'null'; // Retorna null se não houver resultados
+                return 'null'; 
             }
         } catch (error) {
             console.error('Erro ao buscar tipo de usuário:', error);
-            throw error; // Lança o erro para ser tratado na chamada
+            throw error; 
         }
 
     }
@@ -313,20 +314,20 @@ export namespace EventsHandler {
         const conn = await connectDatabase();
         try {
             let query = '';
-            if (betResult.toLowerCase() === 'Sim') {
+            if (betResult.toLowerCase() === 'sim') {
                 query = `SELECT id_participante FROM Participa WHERE id_evento = ? AND aposta = ?`;
                 const result = await conn.query(query, [id, 's']);
-                return result[0] || []; // Acesso à primeira linha do resultado
-            } else if (betResult.toLowerCase() === 'Não') {
+                return result[0] || []; 
+            } else if (betResult.toLowerCase() === 'nao') {
                 query = `SELECT id_participante FROM Participa WHERE id_evento = ? AND aposta = ?`;
                 const result = await conn.query(query, [id, 'n']);
-                return result[0] || []; // Acesso à primeira linha do resultado
+                return result[0] || []; 
             } else {
                 throw new Error('Resultado da aposta inválido.');
             }
         } catch (error) {
             console.error('Erro ao encontrar apostadores:', error);
-            throw error; // Lança o erro para que possa ser tratado em outro lugar
+            throw error; 
         } finally {
             await conn.close();
         }
@@ -337,38 +338,46 @@ export namespace EventsHandler {
     export async function sumOfIncomingsWinners(id: number, betResult: string): Promise<number> {
         const conn = await connectDatabase();
         try {
-            const [rows] = await conn.query(
-                `SELECT SUM(total_apostado) AS totalVencedores FROM Participa WHERE id_evento = ? AND aposta = ?;`,
-                [id, betResult] // Uso de placeholders para segurança
+            let query;
+            if(betResult.toLowerCase() == 'sim'){
+                query = `SELECT SUM(total_apostado) AS totalVencedores FROM Participa WHERE id_evento = ? AND aposta = 's';`;
+            }else if(betResult.toLowerCase() == 'nao'){
+                query = `SELECT SUM(total_apostado) AS totalVencedores FROM Participa WHERE id_evento = ? AND aposta = 'n';`;
+            }
+            const [rows] = await conn.query(query,
+                [id] 
             );
-
             // Retorna o totalVencedores ou 0 se não houver resultados
             return rows[0]?.totalVencedores ? Number(rows[0].totalVencedores) : 0;
         } catch (error) {
             console.error('Erro ao calcular total de vencedores:', error);
-            throw error; // Lança o erro para tratamento em outro lugar
+            throw error; 
         } finally {
-            await conn.end(); // Fecha a conexão
+            await conn.end(); 
         }
     }
 
 
-    // Função para calcular o total apostado no evento
-    export async function sumOfIncomings(id: number): Promise<number> {
+    // Função para calcular o total apostado pelos vencedores
+    export async function sumOfIncomingsLosers(id: number, betResult: string): Promise<number> {
         const conn = await connectDatabase();
         try {
-            const [rows] = await conn.query(
-                `SELECT SUM(total_apostado) AS totalGeral FROM Participa WHERE id_evento = ?;`,
-                [id] // Uso de placeholders para segurança
+            let query;
+            if(betResult.toLowerCase() == 'sim'){
+                query = `SELECT SUM(total_apostado) AS totalPerdedores FROM Participa WHERE id_evento = ? AND aposta = 'n';`;
+            }else if(betResult.toLowerCase() == 'nao'){
+                query = `SELECT SUM(total_apostado) AS totalPerdedores FROM Participa WHERE id_evento = ? AND aposta = 's';`;
+            }
+            const [rows] = await conn.query(query,
+                [id] 
             );
-
-            // Retorna o totalGeral ou 0 se não houver resultados
-            return rows[0]?.totalGeral ? Number(rows[0].totalGeral) : 0;
+            // Retorna o totalVencedores ou 0 se não houver resultados
+            return rows[0]?.totalPerdedores ? Number(rows[0].totalPerdedores) : 0;
         } catch (error) {
-            console.error('Erro ao calcular total apostado:', error);
-            throw error; // Lança o erro para tratamento em outro lugar
+            console.error('Erro ao calcular total de vencedores:', error);
+            throw error; 
         } finally {
-            await conn.end(); // Fecha a conexão
+            await conn.end(); 
         }
     }
 
@@ -377,45 +386,41 @@ export namespace EventsHandler {
     export async function finishEvent(id: number, betResult: string): Promise<void> {
         const connection = await connectDatabase();
         try {
-            await connection.query(
-                `UPDATE Evento SET status = 'encerrado' WHERE id_evento = ?;`,
-                [id] // Uso de placeholders para evitar injeção SQL
-            );
 
             const vencedores = await findBettors(id, betResult);
-            const total_apostado = await sumOfIncomings(id);
+            const total_perdedores = await sumOfIncomingsLosers(id,betResult);
+            console.log("total_perdedores ", total_perdedores);
             const total_vencedores = await sumOfIncomingsWinners(id, betResult);
 
             for (const vencedor of vencedores) {
-                const idParticipante = vencedor.id_participante; // Acesse o ID do vencedor corretamente
+                const idParticipante = vencedor.id_participante; 
                 const [valorResult] = await connection.query(
                     `SELECT total_apostado FROM Participa WHERE id_evento = ? AND id_participante = ?;`,
-                    [id, idParticipante] // Uso de placeholders
+                    [id, idParticipante] 
                 );
 
-                const valorApostado = Number(valorResult[0]?.total_apostado || 0); // Acessa o valor corretamente
-                const prize = (valorApostado / total_vencedores) * total_apostado;
-
-                const [id_wallet_result] = await connection.query(
-                    `SELECT id_wallet FROM Transacao WHERE user_id = ?;`,
-                    [idParticipante]
-                );
-
-                const id_wallet = id_wallet_result[0]?.id_wallet; // Acessa o ID da wallet corretamente
+                const valorApostado = Number(valorResult[0]?.total_apostado || 0);
+                var prize :number = ((valorApostado / total_vencedores) * total_perdedores) + valorApostado;
+                
                 await connection.query(
                     `INSERT INTO Transacao (id_wallet, user_id, value, type) VALUES (?, ?, ?, ?);`,
-                    [id_wallet, idParticipante, prize, 'deposito'] // Uso de placeholders
+                    [idParticipante, idParticipante, prize.toFixed(2), 'deposito'] 
                 );
             }
         } catch (error) {
             console.error('Erro ao encerrar o evento:', error);
             throw error; // Lança o erro para tratamento em outro lugar
         } finally {
+            await connection.query(
+                `UPDATE Evento SET status = 'encerrado' WHERE id_evento = ?;`,
+                [id] 
+            );
             await connection.close();
         }
     }
     // Rota para encerrar um evento
     export const finishEventRoute: RequestHandler = async (req, res) => {
+        const connection = await connectDatabase();
         try {
             const pId = req.query.id;
             const pId_user = req.query.id_user;
@@ -427,18 +432,100 @@ export namespace EventsHandler {
                 res.status(400).send('Dados inválidos.');
                 return;
             }
-
+           
             const user_type = await searchTypeUser(Number(pId_user));
             if (user_type === 'moderador') {
-                await finishEvent(Number(pId), String(pBetResult));
-                res.status(200).send('Evento encerrado com sucesso.');
+                // verificar se o evento ja não foi encerrado
+                const [rows] = await connection.query(
+                    `SELECT status FROM Evento WHERE id_evento = ?;`,
+                    [pId]
+                );
+                if (rows.length > 0 && rows[0].status === 'encerrado') {
+                    res.status(403).send("Este evento já foi finalizado!");
+                }else{
+                    await finishEvent(Number(pId), String(pBetResult));
+                    res.status(200).send('Evento encerrado com sucesso.');
+                }
             } else {
                 res.status(403).send('Acesso Negado.');
             }
+        
+                
         } catch (error) {
             console.error('Erro na rota:', error);
             res.status(500).send('Erro ao encerrar o evento.');
         }
     }
+    export const getEvents: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+        const filter = req.get('filter'); 
+        const connection = await connectDatabase();
+        let results;
+    
+        try {
+            if (filter === 'pendente') {
+                results = await connection.execute(
+                    "SELECT * FROM Evento WHERE status = 'pendente'"
+                );
+            } else if (filter === 'futuros') {
+                results = await connection.execute(
+                    "SELECT * FROM Evento WHERE dataEvento > CURDATE()"
+                );
+            } else if (filter === 'passado') {
+                results = await connection.execute(
+                    "SELECT * FROM Evento WHERE dataEvento < CURDATE()"
+                );
+            } else {
+                results = await connection.execute('SELECT * FROM Evento');
+            }
+    
+            // Adiciona o log para verificar o conteúdo de results.rows
+            if (results[0] && results[0].length > 0) {
+                console.log("Eventos encontrados:", results[0]);
+                res.status(200).json(results[0]);
+            } else {
+                console.log("Nenhum evento encontrado para o filtro aplicado.");
+                res.status(404).send('Nenhum evento encontrado.');
+            }
+        } catch (error) {
+            console.error("Erro ao buscar eventos:", error);
+            res.status(500).send("Erro ao buscar eventos.");
+        } finally {
+            await connection.close();
+        }
+    };
+    export const searchEvent: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+        const keyword = req.get('keyword');
+    
+        if (!keyword) {
+            res.status(400).send('A palavra-chave é obrigatória.');
+            return;
+        }
+    
+        let connection;
+    
+        try {
+            connection = await connectDatabase();
+            const results = await connection.execute(
+                `SELECT * FROM Evento WHERE titulo LIKE '%${keyword}%' OR descricao LIKE '%${keyword}%'`,
+            // Coloca os '%' no valor do parâmetro
+            );
+            
+            if (results && results[0].length > 0) {
+                res.status(200).json(results[0]);
+            } else {
+                res.status(404).send('Nenhum evento encontrado com essa palavra-chave.');
+            }
+        } catch (error) {
+            res.status(500).send('Erro ao buscar eventos.');
+        } finally {
+            if (connection) {
+                try {
+                    await connection.close();
+                } catch (closeError) {
+                    console.error('Erro ao fechar a conexão:', closeError);
+                }
+            }
+        }
+    };
 
 }

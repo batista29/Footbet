@@ -24,11 +24,13 @@ routes.post('/withdrawFunds', walletHandler.withdrawFunds); //ok
 
 //eventos
 routes.post('/addNewEvent', EventsHandler.addNewEventRoute); //ok
-routes.put('/evaluateNewEvent', EventsHandler.evaluateNewEvent); //ok
+routes.post('/evaluateNewEvent', EventsHandler.evaluateNewEvent); //ok
 
 routes.post('/finishEvent', EventsHandler.finishEventRoute);//ok
 routes.post('/betOnEvent', EventsHandler.betOnEvent); //ok
 routes.post('/deleteEvent', EventsHandler.deleteEventRoute);// ok
+routes.post('/getEvents', EventsHandler.getEvents);
+routes.post('/searchEvents', EventsHandler.searchEvent);
 
 server.use(routes);
 
