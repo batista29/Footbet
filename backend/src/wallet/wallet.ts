@@ -36,7 +36,7 @@ export namespace walletHandler {
                 if (!err) {
                     res.statusCode = 200;
                     //retornando 1, que é a quantidade de campos alterados, se nao retornar 1 é porque deu erro
-                    res.send(fields);
+                    res.send("Deposito realizado com sucesso");
                 } else {
                     //erro caso nao envie a informações corretas para o banco
                     res.statusCode = 400;
@@ -70,27 +70,50 @@ export namespace walletHandler {
         const id_user = Number(req.get('id_user'));
         let value = Number(req.get('value'));
         const type = 'saque';
+
+        // calcular taxa
+        let tax = 0;
+        if (value <= 100) {
+            tax = 0.04;
+        } else if (value <= 1000) {
+            tax = 0.03;
+        } else if (value <= 5000) {
+            tax = 0.02;
+        } else if (value <= 100000) {
+            tax = 0.01;
+        }
+
+        const fee = value * tax;
+        const netValue = value + fee;
+
         const balance = Number(await seeBalance(id_user));
 
+        console.log(balance, netValue);
+
         //verificando se nao vem campo vazio
-        if (id_wallet && id_user && value && type && balance >= value && Math.sign(value) !== -1) {
-            //conectando com o banco, fiz a função para nao ter que copiar 7 linhas toda hora
-            let conn = connectDatabase();
-            conn.query(`INSERT INTO Transacao (id_wallet,user_id,value,type) VALUES(${id_wallet},${id_user}, -${value}, '${type}');`, function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
-                if (!err) {
-                    res.statusCode = 200;
-                    //retornando 1, que é a quantidade de campos alterados, se nao retornar 1 é porque deu erro
-                    res.send(fields);
-                } else {
-                    //erro caso nao envie a informações corretas para o banco
-                    res.statusCode = 400;
-                    res.send("Informações inválidas");
-                }
-            });
-        } else {
-            //erro caso nao tenha todos os campos preenchidos
+        if (balance < netValue) {
             res.statusCode = 400;
-            res.send("Erro nas informações");
+            res.send("Saldo insuficiente");
+        } else {
+            if (id_wallet && id_user && type && Math.sign(value) !== -1) {
+                //conectando com o banco, fiz a função para nao ter que copiar 7 linhas toda hora
+                let conn = connectDatabase();
+                conn.query(`INSERT INTO Transacao (id_wallet,user_id,value,type) VALUES(${id_wallet},${id_user}, -${netValue}, '${type}');`, function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
+                    if (!err) {
+                        res.statusCode = 200;
+                        //retornando 1, que é a quantidade de campos alterados, se nao retornar 1 é porque deu erro
+                        res.send("Saque concluido com sucesso");
+                    } else {
+                        //erro caso nao envie a informações corretas para o banco
+                        res.statusCode = 400;
+                        res.send("Informações inválidas");
+                    }
+                });
+            } else {
+                //erro caso nao tenha todos os campos preenchidos
+                res.statusCode = 400;
+                res.send("Erro nas informações");
+            }
         }
     }
 }
