@@ -1,5 +1,12 @@
 # Projeto-Integrador-II - Casa de apostas
 
+## Nome e RA
+* Anna Clara Olbi - 24015392
+* Ester Teresa Amaral - 24787319
+* Larissa Furlan Ferreira - 24021876
+* Maria Gabriella Xavier Puccinelli - 24002540
+* Natã Batista Fernandes - 24787400
+
 ## Observação
 * Estamos usando o mysql ao invés do oracle Cloud.
 * Conversamos com a professoara renata e fomos liberados.
