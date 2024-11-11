@@ -15,7 +15,7 @@ CREATE TABLE User(
 );
 
 INSERT INTO User(user_id, full_name, username, email, password_user, token, birth_date, type_user)
-VALUES(DEFAULT,'Natã Batista', 'natabatista', 'natabatista2908@gmail.com', '123', 'oTGxxkHLQQJDmLJEBL9DQCrlaof7ap9J', '2005-08-29', 'moderador');
+VALUES(DEFAULT,'Larissa Furlan', 'larissafurlan', 'larissafurlan@gmail.com', '123', 'oTGxxkHLQQJDmLJEBL9DQCrlaof7ap9J', '2005-08-29', 'moderador');
 
 INSERT INTO User(user_id, full_name, username, email, password_user, token, birth_date, type_user)
 VALUES(DEFAULT,'Maria Gabriella', 'mariagabriella', 'mariagabriella@gmail.com', '12345', 'BAoex3xEcwgnvaYQQWx9TvHHEePU1EQa', '2005-04-05', 'moderador');
@@ -31,7 +31,7 @@ CREATE TABLE Transacao(
 );
 
 CREATE TABLE Evento(
-    id_evento INTEGER NOT NULL PRIMARY KEY,
+    id_evento INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     id_criador INTEGER NOT NULL,
     titulo VARCHAR(50) NOT NULL,
     descricao VARCHAR(50) NOT NULL,

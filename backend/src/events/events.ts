@@ -6,8 +6,6 @@ import oracledb from "oracledb";
 // Namespace para agrupar todos os métodos e funções relacionados aos eventos
 export namespace EventsHandler {
 
-    oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
-
     // Função para conectar ao banco de dados
     function connectDatabase() {
         var mysql = require('mysql2/promise');
@@ -23,7 +21,6 @@ export namespace EventsHandler {
 
     // Tipo Evento
     type Event = {
-        id: number;
         id_criador: number;
         title: string;
         description: string;
@@ -47,7 +44,7 @@ export namespace EventsHandler {
     async function saveNewEvent(ev: Event): Promise<void> {
         let conn = await connectDatabase();
         conn.query(`INSERT INTO Evento (id_evento, id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, valor_cota, status, email)
-    VALUES (${ev.id}, ${ev.id_criador}, '${ev.title}', '${ev.description}', '${formatDateToMySQL(ev.eventDate)}', '${formatDateToMySQL(ev.betsStart)}', '${formatDateToMySQL(ev.betsEnd)}', ${ev.value}, '${ev.status}', '${ev.email}');`);
+    VALUES (default, ${ev.id_criador}, '${ev.title}', '${ev.description}', '${formatDateToMySQL(ev.eventDate)}', '${formatDateToMySQL(ev.betsStart)}', '${formatDateToMySQL(ev.betsEnd)}', ${ev.value}, '${ev.status}', '${ev.email}');`);
 
     }
 
@@ -60,7 +57,6 @@ export namespace EventsHandler {
     // Rota para adicionar um novo evento
     export const addNewEventRoute: RequestHandler = async (req, res) => {
         try {
-            const pId = req.get('id');
             const pid_criador = req.get('id_criador');
             const pTitle = req.get('title');
             const pDescription = req.get('description');
@@ -71,14 +67,13 @@ export namespace EventsHandler {
             const pEmail = req.get('email');
             const pStatus = "analise"; // Status padrão
 
-            console.log(pId, pid_criador, pTitle, pDescription, pEventDate, pBetsStart, pBetsEnd, pValue, pEmail, pStatus);
+            console.log(pid_criador, pTitle, pDescription, pEventDate, pBetsStart, pBetsEnd, pValue, pEmail, pStatus);
 
             if (!pTitle || !pDescription || !pEventDate) {
                 return res.status(400).send('Dados inválidos.');
             }
 
             const newEvent: Event = {
-                id: Number(pId),
                 id_criador: Number(pid_criador),
                 title: String(pTitle),
                 description: String(pDescription),
@@ -447,7 +442,8 @@ export namespace EventsHandler {
         }
     }
     export const getEvents: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-        const filter = req.get('filter');
+        const filter = req.get('filter')?.toLocaleLowerCase();
+
         const connection = await connectDatabase();
         let results;
 
@@ -465,7 +461,7 @@ export namespace EventsHandler {
                     "SELECT * FROM Evento WHERE dataEvento < CURDATE()"
                 );
             } else {
-                results = await connection.execute('SELECT * FROM Evento');
+                results = await connection.execute(`SELECT * FROM Evento where status = ${filter}`);
             }
 
             // Adiciona o log para verificar o conteúdo de results.rows
@@ -484,7 +480,9 @@ export namespace EventsHandler {
         }
     };
     export const searchEvent: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+        console.log('oi')
         const keyword = req.get('keyword');
+        console.log(keyword);
 
         if (!keyword) {
             res.status(400).send('A palavra-chave é obrigatória.');

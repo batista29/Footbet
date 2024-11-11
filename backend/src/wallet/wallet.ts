@@ -88,8 +88,6 @@ export namespace walletHandler {
 
         const balance = Number(await seeBalance(id_user));
 
-        console.log(balance, netValue);
-
         //verificando se nao vem campo vazio
         if (balance < netValue) {
             res.statusCode = 400;
