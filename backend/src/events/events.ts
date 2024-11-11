@@ -480,9 +480,7 @@ export namespace EventsHandler {
         }
     };
     export const searchEvent: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-        console.log('oi')
         const keyword = req.get('keyword');
-        console.log(keyword);
 
         if (!keyword) {
             res.status(400).send('A palavra-chave é obrigatória.');
