@@ -6,28 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - FootBet</title>
     <link rel="stylesheet" href="style_accounts.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-          rel="stylesheet" 
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
-          crossorigin="anonymous">
-    <style>
-        /* Adicione seu estilo personalizado aqui */
-    </style>
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav>
-        <div class="nav-left">
-            <img src="images_accounts/png-transparent-sports-betting-bet365-online-gambling-sportsbook-others-text-sport-logo-thumbnail.png" alt="Logo">
+    <header class="header">
+        <div class="logo">
+            <img src="images_accounts/logo.png" alt="logo" width="140" height="140">
         </div>
-        <div class="nav-right">
-            <ul>
-                <li><a href="signup.html" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></li>
-                <li><a href="../main_page.html">Principal</a></li>
-            </ul>
-        </div>
-    </nav>
+        <nav class="nav">
+            <a href="../main/menu.html" class="event-button">Home</a>
+            <a href="login.html" class="event-button">Login</a>
+        </nav>
+    </header>
 
     <!-- Conteúdo principal -->
     <div class="main">
@@ -49,39 +39,23 @@
                     <input type="text" name="birth_date" id="signup_birth_date" class="inputUser" placeholder="Data de nascimento" required>
                     <button type="submit" id="signup_submit">Cadastrar</button>
                 </form>
-                <a href="signup.html" data-bs-toggle="modal" data-bs-target="#loginModal">Já tem uma conta? Entrar</a>
+                <a href="login.html">Já tem uma conta? Entrar</a>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Login -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="loginForm">
-                        <div class="mb-3">
-                            <label for="login_email" class="form-label">Email:</label>
-                            <input type="email" name="email" id="login_email" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="login_password" class="form-label">Senha:</label>
-                            <input type="password" name="password" id="login_password" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
-                    </form>
-                    <a href="signup.html" >Não tem uma conta? Cadastrar</a>
-                </div>
-            </div>
-        </div>
+    <!-- Login -->
+    <div class="login-container">
+        <h2>LOGIN</h2>
+        <form id="loginForm">
+            <input type="email" name="email" id="login_email" class="inputUser" placeholder="Email" required>
+            <input type="password" name="password" id="login_password" class="inputUser" placeholder="Senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+        <a href="signup.html">Não tem uma conta? Cadastrar</a>
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const API_URL = "http://localhost:3000"; // Altere para a URL do backend
 
@@ -135,10 +109,6 @@
                 if (response.ok) {
                     const data = await response.text();
                     alert(`Login efetuado com sucesso! Token: ${data}`);
-
-                    // Fecha o modal de login
-                    const loginModal = bootstrap.Modal.getInstance(document.getElementById("loginModal"));
-                    loginModal.hide();
                 } else {
                     const error = await response.text();
                     alert(`Erro ao efetuar login: ${error}`);
