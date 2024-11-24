@@ -28,6 +28,8 @@ export namespace walletHandler {
         let value = Number(req.get('value'));
         const type = 'deposito';
 
+        console.log(id_wallet, id_user, value, type);
+
         //verificando se nao vem campo vazio
         if (id_wallet && id_user && value && type && Math.sign(value) !== -1) {
             //conectando com o banco, fiz a função para nao ter que copiar 7 linhas toda hora

@@ -9,18 +9,18 @@
     <script src="script.js"></script>
 </head>
 
-<body onload="carregar()">
+<body onload="openModal()">
     <div id="modalFounds" class="backModal model">
         <div class="optionsFoundBlock">
             <p class="x-modal" onclick="closeModal()">x</p>
             <div class="options">
-                <button class="btnOption">Adicionar</button>
-                <button class="btnOption">Sacar</button>
+                <button class="btnOption" id="btnAddFounds">Adicionar</button>
+                <button class="btnOption" id="btnWithDrawFounds">Sacar</button>
             </div>
             <div class="inputsData">
                 <label for="valueWithDraw">Digite o valor:</label>
-                <input id="valueWithDraw" placeholder=" Ex: 20.00" type="number">
-                <button>Confirmar</button>
+                <input id="valueFounds" placeholder=" Ex: 20.00" type="number">
+                <button onclick="doTransaction()">Confirmar</button>
             </div>
         </div>
     </div>

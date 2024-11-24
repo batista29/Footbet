@@ -1,5 +1,7 @@
 import express from "express";
 import { Request, Response, Router } from "express";
+import cors from "cors";
+
 import { AccountsHandler } from "./accounts/accounts";
 import { EventsHandler } from "./events/events";
 import { walletHandler } from "./wallet/wallet";
@@ -7,12 +9,12 @@ import { walletHandler } from "./wallet/wallet";
 const port = 3000;
 const server = express();
 const routes = Router();
+server.use(cors());
 
 routes.get('/', (req: Request, res: Response) => {
     res.statusCode = 403;
     res.send('Acesso não permitido.');
 });
-
 
 // vamos organizar as rotas em outro local 
 routes.post('/signUp', AccountsHandler.signUp); //Ok

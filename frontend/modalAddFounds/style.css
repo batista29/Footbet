@@ -43,7 +43,7 @@ button {
 
 .x-modal {
     position: fixed;
-    right: 585px;
+    right: 38.5%;
     font-size: x-large;
     cursor: pointer;
 }
