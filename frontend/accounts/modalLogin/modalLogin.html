@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="modalLogin.css">
+    <script src="modalLogin.js"></script>
+</head>
+
+<body onload="openModal()">
+    <div id="modalFounds" class="backModal model">
+        <div class="optionsFoundBlock">
+            <p class="x-modal" onclick="closeModal()">x</p>
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="login_email" class="form-label">Email:</label>
+                        <input type="email" name="email" id="login_email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="login_password" class="form-label">Senha:</label>
+                        <input type="password" name="password" id="login_password" class="form-control" required>
+                    </div>
+                    <button onclick="doTransaction()">Enviar</button>
+                </form>
+                <a href="signup.html" >Não tem uma conta? Cadastrar</a>
+        </div>
+    </div>
+</body>
+
+</html>

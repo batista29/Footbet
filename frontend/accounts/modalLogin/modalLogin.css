@@ -1,0 +1,166 @@
+/* Estilos Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Overlay */
+.backModal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* Modal Container */
+.optionsFoundBlock {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+    width: 400px;
+    padding: 20px;
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+* Botão de Fechar */
+.x-modal {
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white; /* Altere a cor para branco para combinar com o fundo azul */
+    transition: color 0.3s ease;
+}
+
+.x-modal:hover {
+    color: #ccc; /* Cor mais clara ao passar o mouse */
+}
+
+/* Cabeçalho do Modal */
+.modal-header {
+    background-color: #002e5d;
+    color: white;
+    padding: 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    position: relative; /* Necessário para posicionar o botão de fechar dentro */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center; /* Garante que o título fique centralizado */
+}
+
+/* Corpo do Modal */
+.modal-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.modal-body form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Inputs */
+.inputUser {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.inputUser:focus {
+    border-color: #002e5d;
+}
+
+.labelInput {
+    display: none; /* Ocultado se não for usado */
+}
+
+/* Botão de Envio */
+.modal-body button {
+    width: 100%;
+    padding: 12px;
+    background-color: #002e5d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-body button:hover {
+    background-color: #004080;
+}
+
+/* Link de Cadastro */
+.modal-body a {
+    margin-top: 10px;
+    display: inline-block;
+    color: #002e5d;
+    text-decoration: none;
+    font-size: 14px;
+    transition: text-decoration 0.3s ease;
+}
+
+.modal-body a:hover {
+    text-decoration: underline;
+}
+
+/* Animação */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .optionsFoundBlock {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .modal-title {
+        font-size: 1.1rem;
+    }
+
+    .modal-body button {
+        font-size: 14px;
+    }
+}

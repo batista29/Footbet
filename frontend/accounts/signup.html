@@ -44,17 +44,7 @@
         </div>
     </div>
 
-    <!-- Login -->
-    <div class="login-container">
-        <h2>LOGIN</h2>
-        <form id="loginForm">
-            <input type="email" name="email" id="login_email" class="inputUser" placeholder="Email" required>
-            <input type="password" name="password" id="login_password" class="inputUser" placeholder="Senha" required>
-            <button type="submit">Entrar</button>
-        </form>
-        <a href="signup.html">Não tem uma conta? Cadastrar</a>
-    </div>
-
+   
     <!-- Scripts -->
     <script>
         const API_URL = "http://localhost:3000"; // Altere para a URL do backend
@@ -84,34 +74,6 @@
                 } else {
                     const error = await response.text();
                     alert(`Erro ao cadastrar: ${error}`);
-                }
-            } catch (err) {
-                alert("Erro ao conectar com o servidor.");
-            }
-        });
-
-        // Login
-        document.getElementById("loginForm").addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            const email = document.getElementById("login_email").value;
-            const password = document.getElementById("login_password").value;
-
-            try {
-                const response = await fetch(`${API_URL}/login`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                if (response.ok) {
-                    const data = await response.text();
-                    alert(`Login efetuado com sucesso! Token: ${data}`);
-                } else {
-                    const error = await response.text();
-                    alert(`Erro ao efetuar login: ${error}`);
                 }
             } catch (err) {
                 alert("Erro ao conectar com o servidor.");
