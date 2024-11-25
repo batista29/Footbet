@@ -23,7 +23,7 @@ VALUES(DEFAULT,'Maria Gabriella', 'mariagabriella', 'mariagabriella@gmail.com', 
 CREATE TABLE Transacao(
     id_wallet INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    value INTEGER NOT NULL DEFAULT 0,
+    value decimal(10,2) NOT NULL DEFAULT 0,
     type VARCHAR(8),
     CONSTRAINT CHK_type CHECK (type ='saque' or type='deposito'),
     FOREIGN KEY (user_id) REFERENCES User(user_id),
