@@ -28,8 +28,6 @@ export namespace walletHandler {
         let value = Number(req.get('value'));
         const type = 'deposito';
 
-        console.log(id_wallet, id_user, value, type);
-
         //verificando se nao vem campo vazio
         if (id_wallet && id_user && value && type && Math.sign(value) !== -1) {
             //conectando com o banco, fiz a função para nao ter que copiar 7 linhas toda hora
@@ -49,6 +47,24 @@ export namespace walletHandler {
             //erro caso nao tenha todos os campos preenchidos
             res.statusCode = 400;
             res.send("Error");
+        }
+    }
+
+    export async function getBalance(req: Request, res: Response) {
+        const id_user = Number(req.get('id_user'));
+        console.log(id_user)
+
+        if (id_user) {
+            let conn = connectDatabase();
+            conn.query(`SELECT SUM(value) as 'saldo' FROM Transacao WHERE user_id = ${id_user};`, function (err: Error, data: RowDataPacket[]) {
+                if (!err) {
+                    res.statusCode = 200;
+                    res.send('Saldo: ' + data[0].saldo);
+                } else {
+                    res.statusCode = 400;
+                    res.send("Error")
+                }
+            });
         }
     }
 

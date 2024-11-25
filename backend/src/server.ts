@@ -24,6 +24,7 @@ routes.post('/login', AccountsHandler.login); //Ok
 // Transações
 routes.post('/addFunds', walletHandler.addFunds); //Ok
 routes.post('/withdrawFunds', walletHandler.withdrawFunds); //ok
+routes.post('/getBalance', walletHandler.getBalance);
 
 //eventos
 routes.post('/addNewEvent', EventsHandler.addNewEventRoute); //ok

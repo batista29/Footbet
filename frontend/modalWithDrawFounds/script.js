@@ -1,8 +1,9 @@
 //Função principal para fazer transações
-async function doAddFounds() {
-    const valueTransaction = parseFloat(document.getElementById('valueAddFounds').value.replace(',', '.'));
+async function doWithDraw() {
+    const valueTransaction = parseFloat(document.getElementById('valueFoundsWithDraw').value.replace(',', '.'));
 
     if (valueTransaction) {
+
         const myHeaders = new Headers();
         myHeaders.append("id_wallet", "3");
         myHeaders.append("id_user", "3");
@@ -14,12 +15,12 @@ async function doAddFounds() {
             redirect: "follow"
         };
 
-        await fetch("http://127.0.0.1:3000/addFunds", requestOptions)
+        await fetch("http://127.0.0.1:3000/withdrawFunds", requestOptions)
             .then((response) => {
-                console.log(response.text());
+                console.log(response.json);
                 if (response.status === 200) {
-                    alert(`Deposito de R$${valueTransaction} realizado com sucesso`);
-                    // location.reload()
+                    alert(`Saque de R$${valueTransaction} realizado com sucesso`);
+                    location.reload()
                 } else {
                     alert("Informação inválida, digite números positivos");
                 }
@@ -30,6 +31,7 @@ async function doAddFounds() {
         alert("Digite todas as informações pedidas");
     }
 }
+
 //Função para chamar o modal
 function openModal() {
     const modalFounds = document.getElementById('modalFounds');
