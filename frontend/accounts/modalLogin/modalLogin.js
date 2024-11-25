@@ -1,10 +1,17 @@
-function openModal() {
-    const modalFounds = document.getElementById('modalFounds');
-    modalFounds.classList.remove('model');
-}
+const modal = document.getElementById('loginModal');
+const openModalBtn = document.getElementById('openModalBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
 
-//Função para fechar o modal
-function closeModal() {
-    const modalFounds = document.getElementById('modalFounds');
-    modalFounds.classList.add('model');
-}
+openModalBtn.addEventListener('click', () => {
+    modal.style.display = 'flex';
+});
+
+closeModalBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
