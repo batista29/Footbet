@@ -41,7 +41,9 @@ CREATE TABLE Evento(
     valor_cota decimal(10,2),
     status varchar(20) Default 'analise',
     email varchar(50),
-    FOREIGN KEY(id_criador) REFERENCES User(user_id)
+    categoria varchar(30),
+    FOREIGN KEY(id_criador) REFERENCES User(user_id),
+    CONSTRAINT CHK_categoria CHECK (categoria ='libertadores' or categoria='brasileirão' or categoria='chapions' or categoria='copa do brasil' or categoria='sul americana' or categoria='estaduais' or categoria='la liga' or categoria='premier league')
 );
 
 CREATE TABLE Participa(
