@@ -10,6 +10,7 @@ const port = 3000;
 const server = express();
 const routes = Router();
 server.use(cors());
+server.use(express.json());
 
 routes.get('/', (req: Request, res: Response) => {
     res.statusCode = 403;

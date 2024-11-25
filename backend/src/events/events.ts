@@ -179,16 +179,14 @@ export namespace EventsHandler {
 
     // Função para apostar em um evento
     export const betOnEvent: RequestHandler = async (req, res) => {
+        const email = req.get('email');
+        const user_id = Number(req.get('user_id'));
+        console.log('qtd_cotas');
+        console.log("Corpo da requisição recebido:", req.body);
+
         const connection = await connectDatabase();
         try {
-            const user_id = req.get('user_id');
-            const email = req.get('email');
-            const qtd_cotas = Number(req.get('qtd_cotas'));
-            const id_evento = Number(req.get('id_evento'));
-            console.log('evento id: ', id_evento);
-            const valor_cota = Number(req.get('valor_cota'));
-            const aposta = req.get('aposta');
-
+            const {  qtd_cotas, id_evento, valor_cota, aposta } = req.body;
             const value = valor_cota * qtd_cotas;
 
             // Verifica se o usuário existe pelo email
@@ -199,6 +197,7 @@ export namespace EventsHandler {
                 console.log("Usuário não encontrado.");
                 return res.status(404).send("Usuário não encontrado.");
             }
+            console.log(qtd_cotas);
 
             const user = userRows[0];
             console.log("Usuário encontrado:", user.user_id);
@@ -233,8 +232,6 @@ export namespace EventsHandler {
                 );
 
                 await connection.commit();
-
-                // volte aqui Natã
 
                 res.status(200).send("Aposta realizada com sucesso");
             }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Footbet </title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"> 
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <img src="logo.png" alt="logo" width="140" height="140">
+        </div>
+        <nav class="nav">
+            <a href="#home" class="event-button">Home</a>
+            <a href="#eventos" class="event-button">Eventos</a>
+            <a href="#sobre" class="event-button">Sobre</a>
+            <a href="#contato" class="event-button">Contato</a>
+        </nav>
+
+        <button class="menu-toggle">
+            <img src="User1.png" alt="Abrir Menu" class="menu-icon">
+        </button>
+
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.png" alt="logo" width="130" height="130">
+                <button class="close-sidebar">&times;</button>
+            </div>
+            <ul>
+                <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#"><i class="fas fa-user"></i> Perfil</a></li>
+                <li><a href="#"><i class="fas fa-wallet"></i> Carteira</a></li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Minhas Apostas</a></li>
+                <li><a href="#"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            </ul>
+        </div>
+    </header>
+
+  <section class="hero">
+    <div class="hero-content">
+        <h1 class="team-name">PALMEIRAS</h1>
+        <h2 class="vs-text">VS</h2>
+        <h1 class="team-name">CORINTHIANS</h1>
+        <p>Jogo válido pela 30ª rodada do Brasileirão!</p>
+        <p class="subtext">Quem irá ganhar? Aposte já!</p>
+        <br>
+        <div class="hero-buttons">
+            <button id="openModal" class="button primary">Apostar</button>
+        </div>
+    </div>
+    <div class="hero-image">
+        <img src="jogador.png" alt="Jogador de futebol" />
+    </div>
+</section>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Apostar no Jogo</h2>
+        <h3>Palmeiras irá vencer o Corinthians?</h3>
+        <form id="betForm">
+            <label>
+                <strong><input type="radio" name="aposta" value="s" required> Sim </strong>
+            </label>
+            <br>
+            <label>
+                <strong><input type="radio" name="aposta" value="n" required> Não </strong>
+            </label>
+            <br><br>
+            <p><strong>Valor da cota (R$):</strong> 5.50</p>
+            <input type="number" id="qtd_cotas" name="qtd_cotas" class="form-control" placeholder="Quantidade de cotas" required>
+            <input type="hidden" id="id_evento" value="1"> <!-- Exemplo: ID do evento -->
+            <br><br>
+            <button type="submit" class="button-primary">Confirmar Aposta</button>
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="logo2.png" alt="Logo FootBet" class="logo-image">
+                </div>
+            </div>
+
+             <div class="text-section">
+                <h2>Segurança</h2>
+                <p>Para sua segurança, só é permitido fazer apostas maiores de 18 anos.</p>
+                <p>Transmitimos credibilidade e segurança nos nossos serviços. Nossa plataforma é segura, legal e fácil de usar.</p>
+                <p><strong>Atenção: </strong>não nos responsabilizamos por eventuais perdas, portanto jogue com responsabilidade!</p>
+            </div>
+        </div>
+    </footer>
+  </section>
+</body>
+</html>
