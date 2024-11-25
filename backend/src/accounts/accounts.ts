@@ -86,8 +86,6 @@ export namespace AccountsHandler {
         const email = req.get('email');
         const birthDate = req.get('birthdate');
 
-        console.log(fullName, username, password, email, birthDate);
-
         if (fullName && username && password && email && birthDate) {
             if (!validAge(birthDate)) {
                 res.status(400).send("O usuário deve ser maior de idade.");
