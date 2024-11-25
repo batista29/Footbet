@@ -60,7 +60,9 @@ button {
 
 .inputsData {
     display: grid;
+    justify-items: center;
     margin-top: 90px;
+    width: 100%;
 }
 
 label {
@@ -83,7 +85,7 @@ label {
 .inputsData>input {
     border: 2px solid #002852;
     height: 40px;
-    width: 275px;
+    width: 70%;
     border-radius: 5px;
 }
 
