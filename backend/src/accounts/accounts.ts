@@ -141,11 +141,15 @@ export namespace AccountsHandler {
         const email = req.get('email');
         const password = req.get('password');
 
+        console.log(email);
+        console.log(password)
         if (email && password) {
-            const token = await verifyAccount(email, password);
+            const infos = await verifyAccount(email, password);
 
-            if (token) {
-                res.status(200).json(token);
+            // console.log(infos)
+
+            if (infos) {
+                res.status(200).json(infos);
             }
             else {
                 res.status(401).send("Email ou senha incorretos.");

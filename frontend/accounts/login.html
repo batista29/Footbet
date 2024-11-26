@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style_accounts.css">
 </head>
 
-<body>
+<body onload="carregar()">
     <header class="header">
         <div class="logo">
             <img src="images_accounts/logo.png" alt="logo" width="140" height="140">
@@ -44,7 +44,40 @@
 
     <!-- Scripts -->
     <script>
-        const API_URL = "http://127.1.1.0:3000"; // Altere para a URL do backend
+        const API_URL = "http://127.0.0.1:3000"; // Altere para a URL do backend
+
+        async function carregar() {
+            var loginSalvo = localStorage.getItem('dados_user');
+            loginSalvo = JSON.parse(loginSalvo)
+
+            if (!loginSalvo.email && !loginSalvo.senha) {
+                alert("Nao esta logado");
+            } else {
+                const myHeaders = new Headers();
+                myHeaders.append("email", `${loginSalvo.email}`);
+                myHeaders.append("password", `${loginSalvo.senha}`);
+
+                const requestOptions = {
+                    method: "POST",
+                    headers: myHeaders,
+                    redirect: "follow"
+                };
+
+                try {
+                    const response = await fetch(`${API_URL}/login`, requestOptions);
+
+                    if (response.ok) {
+                        alert(`Sucesso`);
+                        //window.location.href = "#";
+                    } else {
+                        alert(`Erro`);
+                    }
+                } catch (error) {
+                    console.error("Erro ao conectar ao servidor:", error);
+                    alert("Erro ao conectar ao servidor. Por favor, tente novamente mais tarde.");
+                }
+            }
+        }
 
         // Login
         document.getElementById("loginForm").addEventListener("submit", async (event) => {
