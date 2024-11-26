@@ -126,7 +126,8 @@ export namespace AccountsHandler {
                     `SELECT * FROM User WHERE email = '${email}' AND password_user = '${password}'`,
                     function (err: Error, data: RowDataPacket[], fields: FieldPacket) {
                         if (!err && data.length > 0) {
-                            resolve(data[0].token);
+                            let infos: any = data;
+                            resolve(infos);
                         } else {
                             resolve(data.length);
                         }
@@ -143,8 +144,10 @@ export namespace AccountsHandler {
         if (email && password) {
             const token = await verifyAccount(email, password);
 
+            console.log(token)
+
             if (token) {
-                res.status(200).send("Login efetuado com sucesso. Seu token: " + token);
+                res.status(200).json(token);
             }
             else {
                 res.status(401).send("Email ou senha incorretos.");
