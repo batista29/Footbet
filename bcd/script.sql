@@ -63,3 +63,30 @@ SELECT * FROM Transacao;
 SELECT SUM(value) as 'saldo' FROM Transacao WHERE user_id = 2;
 
 SELECT token FROM User WHERE email = 'natabatista2908@gmail.com' AND password_user = '123';
+
+CREATE OR REPLACE VIEW mais_apostados AS
+SELECT 
+    eve.id_evento, 
+    eve.titulo, 
+    eve.descricao, 
+    eve.dataEvento, 
+    eve.inicioApostas, 
+    eve.fimApostas, 
+    eve.valor_cota, 
+    eve.categoria, 
+    SUM(par.total_apostado) AS total_apostado
+FROM Evento eve
+JOIN Participa par ON eve.id_evento = par.id_evento
+GROUP BY 
+    eve.id_evento, 
+    eve.titulo, 
+    eve.descricao, 
+    eve.dataEvento, 
+    eve.inicioApostas, 
+    eve.fimApostas, 
+    eve.valor_cota, 
+    eve.categoria
+ORDER BY 
+    total_apostado DESC;
+
+SELECT * FROM mais_apostados;

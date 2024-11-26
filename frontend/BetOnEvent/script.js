@@ -47,46 +47,45 @@ window.addEventListener('click', (event) => {
 });
 
 
-    document.getElementById("betForm").addEventListener("submit", async (event) => {
-        event.preventDefault(); // Evita o reload da página
+document.getElementById("betForm").addEventListener("submit", async (event) => {
+    event.preventDefault(); // Evita o reload da página
 
-        const aposta = document.querySelector('input[name="aposta"]:checked').value;
-        const qtd_cotas = document.getElementById("qtd_cotas").value;
-        const id_evento = document.getElementById("id_evento").value;
-        const valor_cota = 5.50; // Valor fixo informado no HTML
-        console.log('qtd_cotas');
-        // Informações do usuário (simuladas aqui, ajuste conforme seu sistema)
-        const user_id = "3"; // Substituir com o ID real do usuário (token ou header)
-        const email = "natabatista2908@gmail.com"; // Substituir com o email real do usuário
+    const aposta = document.querySelector('input[name="aposta"]:checked').value;
+    const qtd_cotas = document.getElementById("qtd_cotas").value;
+    const id_evento = document.getElementById("id_evento").value;
+    const valor_cota = 5.50; // Valor fixo informado no HTML
+    console.log('qtd_cotas');
+    // Informações do usuário (simuladas aqui, ajuste conforme seu sistema)
+    const user_id = "3"; // Substituir com o ID real do usuário (token ou header)
+    const email = "natabatista2908@gmail.com"; // Substituir com o email real do usuário
 
-        try {
-            const response = await fetch("http://localhost:3000/betOnEvent", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "user_id": user_id,
-                    "email": email,
-                },
-                body: JSON.stringify({
-                    qtd_cotas: qtd_cotas,
-                    id_evento: id_evento,
-                    valor_cota: valor_cota,
-                    aposta: aposta,
-                }),
-            });
+    try {
+        const response = await fetch("http://127.0.0.1:3000/betOnEvent", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "user_id": user_id,
+                "email": email,
+            },
+            body: JSON.stringify({
+                qtd_cotas: qtd_cotas,
+                id_evento: 2,
+                valor_cota: valor_cota,
+                aposta: aposta,
+            }),
+        });
 
-            if (response.ok) {
-                const result = await response.text();
-                alert("Aposta realizada com sucesso: " + result);
-            } else {
-                const error = await response.text();
-                alert("Erro ao realizar aposta: " + error);
-            }
-        } catch (err) {
-            console.error("Erro na requisição:", err);
-            alert("Erro de conexão com o servidor.");
+        if (response.ok) {
+            const result = await response.text();
+            alert("Aposta realizada com sucesso: " + result);
+        } else {
+            const error = await response.text();
+            alert("Erro ao realizar aposta: " + error);
         }
-    });
+    } catch (err) {
+        console.error("Erro na requisição:", err);
+        alert("Erro de conexão com o servidor.");
+    }
+});
 
 
-    
