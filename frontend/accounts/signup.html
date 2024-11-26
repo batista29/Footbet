@@ -76,19 +76,24 @@
                 redirect: "follow"
             };
 
-            await fetch("http://127.0.0.1:3000/signUp", requestOptions)
-                .then((response) => {
-                    if (response.ok) {
-                    const data =  response.text();
-                    alert(`Login efetuado com sucesso!`);
+            try {
+                const response = await fetch("http://127.0.0.1:3000/signUp", requestOptions);
+                
+                const message = await response.text();
+
+                if (response.ok) {
+                    alert(`Sucesso: ${message}`);
+                    // Redirecionar para outra página
+                    //window.location.href = "#";
                 } else {
-                    const error =  response.text();
-                    alert(`Erro ao efetuar login: ${error}`);
+                    alert(`Erro: ${message}`);
                 }
-                })
-                .then((result) => console.log(result))
-                .catch((error) => console.error(error));
+            } catch (error) {
+                console.error("Erro ao conectar ao servidor:", error);
+                alert("Erro ao conectar ao servidor. Por favor, tente novamente mais tarde.");
+            }
         });
+
     </script>
 </body>
 
