@@ -144,8 +144,6 @@ export namespace AccountsHandler {
         if (email && password) {
             const token = await verifyAccount(email, password);
 
-            console.log(token)
-
             if (token) {
                 res.status(200).json(token);
             }

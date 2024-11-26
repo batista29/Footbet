@@ -66,10 +66,18 @@
             try {
                 const response = await fetch(`${API_URL}/login`, requestOptions);
 
-                const message = await response.text();
+                let message = await response.text();
+                message = JSON.parse(message);
+
+                let salvarLogin = {
+                    email: message[0].email,
+                    senha: message[0].password_user
+                }
+
+                localStorage.setItem('dados_user', JSON.stringify(salvarLogin));
 
                 if (response.ok) {
-                    alert(`Sucesso: ${message}`);
+                    alert(`Sucesso:`);
 
                     // Redirecionar para outra página
                     //window.location.href = "#";
