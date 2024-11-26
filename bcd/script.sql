@@ -77,6 +77,7 @@ SELECT
     SUM(par.total_apostado) AS total_apostado
 FROM Evento eve
 JOIN Participa par ON eve.id_evento = par.id_evento
+WHERE eve.status = 'ativo'
 GROUP BY 
     eve.id_evento, 
     eve.titulo, 
@@ -89,4 +90,4 @@ GROUP BY
 ORDER BY 
     total_apostado DESC;
 
-SELECT * FROM mais_apostados;
+SELECT * FROM mais_apostados LIMIT 10;
