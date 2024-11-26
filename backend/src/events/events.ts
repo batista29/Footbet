@@ -186,7 +186,7 @@ export namespace EventsHandler {
 
         const connection = await connectDatabase();
         try {
-            const {  qtd_cotas, id_evento, valor_cota, aposta } = req.body;
+            const { qtd_cotas, id_evento, valor_cota, aposta } = req.body;
             const value = valor_cota * qtd_cotas;
 
             // Verifica se o usuário existe pelo email
@@ -476,6 +476,7 @@ export namespace EventsHandler {
             await connection.close();
         }
     };
+
     export const searchEvent: RequestHandler = async (req: Request, res: Response): Promise<void> => {
         const keyword = req.get('keyword');
 
@@ -511,4 +512,33 @@ export namespace EventsHandler {
         }
     };
 
+    //Mostrar eventos mais apostados
+    export const topEvents: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+
+        let connection;
+
+        try {
+            connection = await connectDatabase();
+            const results = await connection.execute(
+                `SELECT * FROM mais_apostados LIMIT 10;`,
+                // Coloca os '%' no valor do parâmetro
+            );
+
+            if (results && results[0].length > 0) {
+                res.status(200).json(results[0]);
+            } else {
+                res.status(404);
+            }
+        } catch (error) {
+            res.status(500).send('Erro ao buscar eventos.');
+        } finally {
+            if (connection) {
+                try {
+                    await connection.close();
+                } catch (closeError) {
+                    console.error('Erro ao fechar a conexão:', closeError);
+                }
+            }
+        }
+    };
 }

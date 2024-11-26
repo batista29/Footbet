@@ -36,6 +36,8 @@ routes.post('/deleteEvent', EventsHandler.deleteEventRoute);// ok
 routes.post('/getEvents', EventsHandler.getEvents);
 routes.post('/searchEvents', EventsHandler.searchEvent);
 
+routes.get('/topEvents', EventsHandler.topEvents);
+
 server.use(routes);
 
 server.listen(port, () => {
