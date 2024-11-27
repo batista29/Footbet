@@ -616,7 +616,7 @@ export namespace EventsHandler {
             conn = await connectDatabase(); // Conectando ao banco
             // Usando await para consultar com promessas
             const [rows] = await conn.execute(
-                `SELECT id_evento, id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, status, email FROM Evento`
+                `SELECT id_evento, id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, status, email FROM Evento where status = 'ativo'`
             );
 
             if (rows.length > 0) {
