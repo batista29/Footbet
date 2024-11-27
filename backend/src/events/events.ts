@@ -555,7 +555,6 @@ export namespace EventsHandler {
             connection = await connectDatabase();
             const results = await connection.execute(
                 `SELECT * FROM evento WHERE categoria = '${categoria}';`,
-                // Coloca os '%' no valor do parâmetro
             );
 
             if (results && results[0].length > 0) {

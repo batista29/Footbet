@@ -36,12 +36,12 @@ routes.post('/deleteEvent', EventsHandler.deleteEventRoute);// ok
 routes.post('/getEvents', EventsHandler.getEvents);
 routes.post('/searchEvents', EventsHandler.searchEvent);
 //ester
-routes.post("/seeBalance",walletHandler.getBalance);
-routes.post("/getUsername",AccountsHandler.getUsername);
-routes.post("/getDeposits",walletHandler.getDeposits);
-routes.post("/getWithDrawals",walletHandler.getWithDrawals);
-routes.post("/getBets",EventsHandler.getbets);
-routes.get("/getAllEvents",EventsHandler.getAllEvents);
+routes.post("/seeBalance", walletHandler.getBalance);
+routes.post("/getUsername", AccountsHandler.getUsername);
+routes.post("/getDeposits", walletHandler.getDeposits);
+routes.post("/getWithDrawals", walletHandler.getWithDrawals);
+routes.post("/getBets", EventsHandler.getbets);
+routes.get("/getAllEvents", EventsHandler.getAllEvents);
 
 routes.get('/topEvents', EventsHandler.topEvents);
 routes.post('/categoryEvents', EventsHandler.category);

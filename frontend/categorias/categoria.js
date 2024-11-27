@@ -4,19 +4,19 @@ const closeSidebar = document.querySelector('.close-sidebar');
 
 // Mostrar o menu
 menuToggle.addEventListener('click', () => {
-    sidebar.classList.add('active');
+  sidebar.classList.add('active');
 });
 
 // Fechar o menu
 closeSidebar.addEventListener('click', () => {
-    sidebar.classList.remove('active');
+  sidebar.classList.remove('active');
 });
 
 // Fechar o menu clicando fora
 window.addEventListener('click', (event) => {
-    if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
-        sidebar.classList.remove('active');
-    }
+  if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+    sidebar.classList.remove('active');
+  }
 });
 
 
