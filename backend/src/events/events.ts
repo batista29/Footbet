@@ -554,7 +554,7 @@ export namespace EventsHandler {
         try {
             connection = await connectDatabase();
             const results = await connection.execute(
-                `SELECT * FROM evento WHERE categoria = '${categoria}';`,
+                `SELECT * FROM evento WHERE categoria = '${categoria}' and status = 'ativo';`,
             );
 
             if (results && results[0].length > 0) {

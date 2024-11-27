@@ -1,6 +1,6 @@
 async function carregar() {
     const myHeaders = new Headers();
-    myHeaders.append("categoria", "brasileirão");
+    myHeaders.append("categoria", "champions");
 
     const requestOptions = {
         method: "POST",

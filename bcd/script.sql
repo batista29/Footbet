@@ -43,7 +43,7 @@ CREATE TABLE Evento(
     email varchar(50),
     categoria varchar(30),
     FOREIGN KEY(id_criador) REFERENCES User(user_id),
-    CONSTRAINT CHK_categoria CHECK (categoria ='libertadores' or categoria='brasileirão' or categoria='chapions' or categoria='copa do brasil' or categoria='sul americana' or categoria='estaduais' or categoria='la liga' or categoria='premier league')
+    CONSTRAINT CHK_categoria CHECK (categoria ='libertadores' or categoria='brasileirão' or categoria='champions' or categoria='copa do brasil' or categoria='sul americana' or categoria='estaduais' or categoria='la liga' or categoria='premier league')
 );
 
 CREATE TABLE Participa(
