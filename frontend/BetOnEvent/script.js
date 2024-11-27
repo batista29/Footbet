@@ -69,7 +69,7 @@ document.getElementById("betForm").addEventListener("submit", async (event) => {
             },
             body: JSON.stringify({
                 qtd_cotas: qtd_cotas,
-                id_evento: 13,
+                id_evento: 1,
                 valor_cota: valor_cota,
                 aposta: aposta,
             }),
@@ -87,5 +87,28 @@ document.getElementById("betForm").addEventListener("submit", async (event) => {
         alert("Erro de conexão com o servidor.");
     }
 });
+
+
+function submitEvent() {
+    const team1 = document.getElementById('team1').innerText;
+    const team2 = document.getElementById('team2').innerText;
+
+    fetch('http://localhost:3000/addNewEventRoute', {
+        method: 'POST',
+        headers: {
+            'id_criador': '3', // Exemplo: pode ser dinâmico
+            'title': `${team1} vs ${team2}`, // Gerando o título com os times
+            'description': 'Jogo válido pela 30ª rodada do Brasileirão!',
+            'eventDate': '2024-12-01T15:00:00Z',
+            'betsStart': '2024-11-25T10:00:00Z',
+            'betsEnd': '2024-11-30T23:59:00Z',
+            'value': '100',
+            'email': 'criador@exemplo.com',
+        },
+    })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Erro:', error));
+}
 
 
