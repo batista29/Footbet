@@ -19,9 +19,9 @@
     <nav class="navbar bg-body-tertiary">
       <div class="container-fluid">
         <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Buscar eventos por palavra-chave"
+          <input id="inpPesquisa" class="form-control me-2" type="text" placeholder="Buscar eventos por palavra-chave"
             aria-label="Search" style="width: 310px;">
-          <button class="btn btn-outline-success" type="submit">Buscar</button>
+          <button class="btn btn-outline-success" type="button" onclick="pesquisar()">Buscar</button>
         </form>
       </div>
     </nav>
