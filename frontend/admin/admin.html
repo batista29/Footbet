@@ -84,6 +84,44 @@
             </div>
             </div>
         </div>
+        <!-- Modal-->
+        <div class="modal fade" id="evaluateModal" tabindex="-1" 
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Avaliar Evento</h1>
+                    <button type="button" class="btn-close" 
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3 m-0">
+                          <input type="text" class="form-control" id="id" value="Id evento: 0" disabled>
+                        </div>
+                        <div class="mb-3">
+                          <input type="text" class="form-control " 
+                          id="status" aria-describedby="productPriceHelp" placeholder="Novo status">
+                        </div>
+                        <div class="mb-3">
+                          <input type="text" class="form-control " 
+                          id="rejectionReason" aria-describedby="productPriceHelp" placeholder="Motivo da rejeicao">
+                          <div id="productPriceHelp" class="form-text">
+                            Atenção:
+                            Motivo de rejeicao validos:
+                            Texto confuso!, Texto inapropriado, Não respeita a política de privacidade ou os termos da plataforma!
+                          </div>
+                        </div>
+                      </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" 
+                    data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="evaluateEvent();">Salvar</button>
+                </div>
+            </div>
+            </div>
+        </div>
     <script>
       document.querySelector('.menu-toggle').addEventListener('click', () => {
     document.body.classList.toggle('menu-open');
@@ -109,8 +147,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             const result = await fetch("http://localhost:3000/getAllEvents", requestOptions);
+            console.log('Resposta da requisição:', result);
             if (result.ok) {
                 const resultArray = await result.json();
+                console.log('Eventos recebidos:', resultArray);
+
+                // Limpar a tabela de eventos antes de adicionar os novos
+                const eventsTable = document.getElementById("events");
+                eventsTable.innerHTML = '';
 
                 if (resultArray && resultArray.length > 0) {
                     resultArray.forEach(item => {
@@ -129,16 +173,18 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${fstartBet}</td>
                             <td>${fendBet}</td>
                             <td>${item.status}</td>
-                            <td><div class="d-grid gap-2 col-6 mx-auto">
-                                <button class="btn btn-outline-primary" type="button">Avaliar</button>
-                                <button class="btn btn-outline-primary btnShowEvent" type="button" data-bs-toggle="modal" data-bs-target="#addNewProductModal">Encerrar</button>
-                            </div></td>
+                            <td>
+                                <div class="d-grid gap-2 col-6 mx-auto">
+                                    <button class="btn btn-outline-primary btnEvaluate" type="button" data-bs-toggle="modal" data-bs-target="#evaluateModal">Avaliar</button>
+                                    <button class="btn btn-outline-primary btnShowEvent" type="button" data-bs-toggle="modal" data-bs-target="#addNewProductModal">Encerrar</button>
+                                </div>
+                            </td>
                         </tr>`;
 
-                        document.getElementById("events").insertAdjacentHTML('beforeend', newRow);
+                        eventsTable.insertAdjacentHTML('beforeend', newRow);
                     });
 
-                    // Adicionar o evento de clique para cada botão de "Encerrar"
+                    // Adicionar evento de clique para os botões de "Avaliar" e "Encerrar"
                     document.querySelectorAll('.btnShowEvent').forEach(button => {
                         button.addEventListener('click', function () {
                             // Obter o ID do evento da célula correspondente
@@ -146,14 +192,35 @@ document.addEventListener('DOMContentLoaded', function () {
                             const eventId = row.querySelector('.eventId').textContent;
 
                             // Preencher o modal com o ID do evento
-                            document.getElementById('idEvento').value = `${eventId}`;
+                            const idEventoElement = document.getElementById('idEvento');
+                            if (idEventoElement) { // Verifica se o idEvento realmente existe
+                                idEventoElement.value = eventId;
+                            }
+
+                            console.log(`Evento ID: ${eventId}`);
+                        });
+                    });
+                    // Adicionar evento de clique para os botões de "Avaliar"
+                    document.querySelectorAll('.btnEvaluate').forEach(button => {
+                        button.addEventListener('click', function () {
+                            // Obter o ID do evento da célula correspondente
+                            const row = this.closest('tr');
+                            const eventId = row.querySelector('.eventId').textContent;
+
+                            // Preencher o modal com o ID do evento
+                            const idEventoElement = document.getElementById('id');
+                            if (idEventoElement) { // Verifica se o idEvento realmente existe
+                                idEventoElement.value = eventId;
+                            }
+
+                            console.log(`Evento ID: ${eventId}`);
                         });
                     });
                 } else {
                     console.log("Nenhum evento encontrado.");
                 }
             } else {
-                console.log("Erro na requisição.");
+                console.log("Erro na requisição:", result.status);
             }
         } catch (error) {
             console.error("Erro na requisição:", error);
@@ -163,6 +230,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Chamar a função para carregar os eventos
     getAllEvents();
 });
+
+
 
 async function FinishEvent(button) {
   let infos_user= JSON.parse(localStorage.getItem('dados_user'));
@@ -199,6 +268,47 @@ async function FinishEvent(button) {
       }
    } catch (error) {
       console.error("Erro na requisição:", error);
+      alert("Erro ao realizar a requisição");
+   }
+}
+async function evaluateEvent(button) {
+  let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+  let id_user = infos_user.user_id;  // ID do usuário
+  console.log(id_user);
+   var id_evento =document.getElementById('id').value;
+   var newStatus = document.getElementById('status').value;
+   var rejectionReason = document.getElementById('rejectionReason').value;
+   console.log("id_evento: ",id_evento)
+
+   // Verifique se o id_evento é um número válido
+   if (isNaN(id_evento) || id_evento.trim() === "") {
+      alert("ID do evento inválido!");
+      return;
+   }
+
+   const myHeaders = new Headers();
+   myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("user_id",id_user);
+      myHeaders.append("id_evento",id_evento);
+      myHeaders.append("status",newStatus);// O valor é enviado como string
+      myHeaders.append("rejectionReason",rejectionReason);
+   const requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+   };
+  //teste de commit
+   try {
+      const response = await fetch("http://localhost:3000/evaluateNewEvent", requestOptions);
+      console.log('Resposta da requisição:', response);
+      if (response.ok) {
+         const result = await response.json();
+         alert("Evento avaliado com sucesso!");
+      } else {
+         const result = await response.json();
+         alert(`Erro: ${result.message}`);
+      }
+   } catch (error) {
+      console.error("Erro na requisição:", JSON.parse(error));
       alert("Erro ao realizar a requisição");
    }
 }

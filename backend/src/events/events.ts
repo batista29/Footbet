@@ -104,8 +104,8 @@ export namespace EventsHandler {
         console.log({ user_id, id_evento, newStatus, rejectionReason });
 
         // Validação inicial dos dados
-        if (!id_evento || !newStatus || (newStatus !== "ativo" && newStatus !== "rejeitado")) {
-            return res.status(400).send('Dados inválidos.');
+        if (!id_evento || !newStatus ) {
+            return res.status(400).json({messsage: 'Dados inválidos.'});
         }
 
         const validRejectionReasons = [
@@ -128,14 +128,14 @@ export namespace EventsHandler {
                 const [eventRows] = await connection.execute('SELECT id_criador FROM Evento WHERE id_evento = ?', [id_evento]);
 
                 if (eventRows.length === 0) {
-                    return res.status(404).send('Evento não encontrado.');
+                    return res.status(404).json({message:'Evento não encontrado.'});
                 }
 
                 const id_criador = eventRows[0].id_criador;
                 const [emailRows] = await connection.execute('SELECT email FROM User WHERE user_id = ?', [id_criador]);
 
                 if (emailRows.length === 0) {
-                    return res.status(404).send('E-mail do criador não encontrado.');
+                    return res.status(404).json({message: 'E-mail do criador não encontrado.'});
                 }
 
                 const email = emailRows[0].email;
@@ -165,13 +165,13 @@ export namespace EventsHandler {
                 // Atualizar o status do evento
                 await connection.execute('UPDATE Evento SET status = ? WHERE id_evento = ?', [newStatus, id_evento]);
                 await connection.commit();
-                res.status(200).send('Evento atualizado com sucesso.');
+                res.status(200).send({message:'Evento atualizado com sucesso.'});
             } else {
-                res.status(403).send('Acesso proibido!');
+                res.status(403).json({message:'Acesso proibido!'});
             }
         } catch (error) {
             console.error('Erro ao avaliar o evento:', error);
-            res.status(500).send('Erro interno ao processar o pedido.');
+            res.status(500).json({message: 'Erro interno ao processar o pedido.',error});
         } finally {
             await connection.close();
         }
