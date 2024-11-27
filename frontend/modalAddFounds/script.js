@@ -1,7 +1,7 @@
 //Função principal para fazer transações
 async function doAddFounds() {
     const valueTransaction = parseFloat(document.getElementById('valueAddFounds').value.replace(',', '.'));
-//teste de commit
+//teste de commit 3
     if (valueTransaction) {
         let infos_user= JSON.parse(localStorage.getItem('dados_user'));
         let id_user,id_wallet = infos_user.user_id;  // ID do usuário
