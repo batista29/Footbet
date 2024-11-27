@@ -30,6 +30,7 @@ export namespace EventsHandler {
         value: number;
         status: string;
         email: string;
+        categoria: string;
     };
 
     // Função para obter o saldo do usuário
@@ -43,8 +44,8 @@ export namespace EventsHandler {
     // Função para salvar um novo evento no banco de dados -
     async function saveNewEvent(ev: Event): Promise<void> {
         let conn = await connectDatabase();
-        conn.query(`INSERT INTO Evento (id_evento, id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, valor_cota, status, email)
-    VALUES (default, ${ev.id_criador}, '${ev.title}', '${ev.description}', '${formatDateToMySQL(ev.eventDate)}', '${formatDateToMySQL(ev.betsStart)}', '${formatDateToMySQL(ev.betsEnd)}', ${ev.value}, '${ev.status}', '${ev.email}');`);
+        conn.query(`INSERT INTO Evento (id_evento, id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, valor_cota, status, email, categoria)
+    VALUES (default, ${ev.id_criador}, '${ev.title}', '${ev.description}', '${formatDateToMySQL(ev.eventDate)}', '${formatDateToMySQL(ev.betsStart)}', '${formatDateToMySQL(ev.betsEnd)}', ${ev.value}, '${ev.status}', '${ev.email}', '${ev.categoria}');`);
 
     }
 
@@ -66,8 +67,9 @@ export namespace EventsHandler {
             const pValue = req.get('value');
             const pEmail = req.get('email');
             const pStatus = "analise"; // Status padrão
+            const pCategoria = req.get('categoria');
 
-            console.log(pid_criador, pTitle, pDescription, pEventDate, pBetsStart, pBetsEnd, pValue, pEmail, pStatus);
+            console.log(pid_criador, pTitle, pDescription, pEventDate, pBetsStart, pBetsEnd, pValue, pEmail, pStatus, pCategoria);
 
             if (!pTitle || !pDescription || !pEventDate) {
                 return res.status(400).send('Dados inválidos.');
@@ -83,6 +85,7 @@ export namespace EventsHandler {
                 value: Number(pValue),
                 status: pStatus,
                 email: String(pEmail),
+                categoria: String(pCategoria)
             };
 
             await saveNewEvent(newEvent);
@@ -104,8 +107,8 @@ export namespace EventsHandler {
         console.log({ user_id, id_evento, newStatus, rejectionReason });
 
         // Validação inicial dos dados
-        if (!id_evento || !newStatus ) {
-            return res.status(400).json({messsage: 'Dados inválidos.'});
+        if (!id_evento || !newStatus) {
+            return res.status(400).json({ messsage: 'Dados inválidos.' });
         }
 
         const validRejectionReasons = [
@@ -128,14 +131,14 @@ export namespace EventsHandler {
                 const [eventRows] = await connection.execute('SELECT id_criador FROM Evento WHERE id_evento = ?', [id_evento]);
 
                 if (eventRows.length === 0) {
-                    return res.status(404).json({message:'Evento não encontrado.'});
+                    return res.status(404).json({ message: 'Evento não encontrado.' });
                 }
 
                 const id_criador = eventRows[0].id_criador;
                 const [emailRows] = await connection.execute('SELECT email FROM User WHERE user_id = ?', [id_criador]);
 
                 if (emailRows.length === 0) {
-                    return res.status(404).json({message: 'E-mail do criador não encontrado.'});
+                    return res.status(404).json({ message: 'E-mail do criador não encontrado.' });
                 }
 
                 const email = emailRows[0].email;
@@ -165,13 +168,13 @@ export namespace EventsHandler {
                 // Atualizar o status do evento
                 await connection.execute('UPDATE Evento SET status = ? WHERE id_evento = ?', [newStatus, id_evento]);
                 await connection.commit();
-                res.status(200).send({message:'Evento atualizado com sucesso.'});
+                res.status(200).send({ message: 'Evento atualizado com sucesso.' });
             } else {
-                res.status(403).json({message:'Acesso proibido!'});
+                res.status(403).json({ message: 'Acesso proibido!' });
             }
         } catch (error) {
             console.error('Erro ao avaliar o evento:', error);
-            res.status(500).json({message: 'Erro interno ao processar o pedido.',error});
+            res.status(500).json({ message: 'Erro interno ao processar o pedido.', error });
         } finally {
             await connection.close();
         }
@@ -409,10 +412,10 @@ export namespace EventsHandler {
             const pId = Number(req.get('id_evento'));
             const pId_user = Number(req.get('id_user'));
             const pBetResult = req.get('betResult');
-            console.log(pId,pBetResult,pId_user);
+            console.log(pId, pBetResult, pId_user);
 
             if (!pId || !pBetResult || !pId_user) {
-                res.status(400).json({message: 'Dados inválidos.'});
+                res.status(400).json({ message: 'Dados inválidos.' });
                 return;
             }
 
@@ -424,19 +427,19 @@ export namespace EventsHandler {
                     [pId]
                 );
                 if (rows.length > 0 && rows[0].status === 'encerrado') {
-                    res.status(403).json({message: "Este evento já foi finalizado!"});
+                    res.status(403).json({ message: "Este evento já foi finalizado!" });
                 } else {
                     await finishEvent(Number(pId), String(pBetResult));
-                    res.status(200).json({message:'Evento encerrado com sucesso.'});
+                    res.status(200).json({ message: 'Evento encerrado com sucesso.' });
                 }
             } else {
-                res.status(403).json({message: 'Acesso Negado.'});
+                res.status(403).json({ message: 'Acesso Negado.' });
             }
 
 
         } catch (error) {
             console.error('Erro na rota:', error);
-            res.status(500).json({message: 'Erro ao encerrar o evento.'});
+            res.status(500).json({ message: 'Erro ao encerrar o evento.' });
         }
     }
     export const getEvents: RequestHandler = async (req: Request, res: Response): Promise<void> => {
@@ -512,9 +515,8 @@ export namespace EventsHandler {
             }
         }
     };
-     //Mostrar eventos mais apostados
-     export const topEvents: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-
+    //Mostrar eventos mais apostados
+    export const topEvents: RequestHandler = async (req: Request, res: Response): Promise<void> => {
         let connection;
 
         try {
@@ -541,18 +543,51 @@ export namespace EventsHandler {
             }
         }
     };
-      // Ester
-      export async function getbets(req: Request, res: Response) {
-        const id_user = Number(req.get('id_user'));  
+
+    //Eventos por categoria
+    //Mostrar eventos mais apostados
+    export const category: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+        const category = req.get('category');
+
+        let connection;
+
+        try {
+            connection = await connectDatabase();
+            const results = await connection.execute(
+                `SELECT * FROM evento WHERE categoria = ${category};`,
+                // Coloca os '%' no valor do parâmetro
+            );
+
+            if (results && results[0].length > 0) {
+                res.status(200).json(results[0]);
+            } else {
+                res.status(404);
+            }
+        } catch (error) {
+            res.status(500).send('Erro ao buscar eventos.');
+        } finally {
+            if (connection) {
+                try {
+                    await connection.close();
+                } catch (closeError) {
+                    console.error('Erro ao fechar a conexão:', closeError);
+                }
+            }
+        }
+    };
+
+    // Ester
+    export async function getbets(req: Request, res: Response) {
+        const id_user = Number(req.get('id_user'));
         console.log("Id para ver Apostas:", id_user);
-    
+
         if (!id_user) {
             return res.status(400).json({ message: "ID do usuário não fornecido." });
         }
-    
+
         try {
             const conn = await connectDatabase();
-            
+
             // Usando 'execute' ou 'query' com 'await'
             const [rows] = await conn.execute(
                 `SELECT e.titulo, p.qtd_cotas, p.total_apostado 
@@ -561,7 +596,7 @@ export namespace EventsHandler {
                  WHERE p.id_participante = ?`,
                 [id_user]
             );
-            
+
             if (rows.length > 0) {
                 console.log("Encontrou");
                 res.status(200).json(rows); // Retorna os dados encontrados
@@ -569,13 +604,12 @@ export namespace EventsHandler {
             } else {
                 res.status(404).json({ message: "Nenhuma aposta encontrada." });
             }
-    
+
         } catch (error) {
             console.error("Erro na conexão ou consulta ao banco:", error);
             return res.status(500).json({ message: "Erro ao acessar o banco de dados." });
         }
     }
-    
 
     export async function getAllEvents(req: Request, res: Response) {
         let conn;
@@ -585,7 +619,7 @@ export namespace EventsHandler {
             const [rows] = await conn.execute(
                 `SELECT id_evento, id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, status, email FROM Evento`
             );
-            
+
             if (rows.length > 0) {
                 return res.status(200).json(rows);
             } else {

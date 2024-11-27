@@ -44,6 +44,7 @@ routes.post("/getBets",EventsHandler.getbets);
 routes.get("/getAllEvents",EventsHandler.getAllEvents);
 
 routes.get('/topEvents', EventsHandler.topEvents);
+routes.get('/categoryEvents', EventsHandler.category);
 
 server.use(routes);
 
