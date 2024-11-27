@@ -154,4 +154,24 @@ export namespace AccountsHandler {
             res.status(400).send("Parâmetros inválidos ou faltantes.");
         }
     };
+
+    export async function getUsername(req: Request, res: Response) {
+        const id_user = Number(req.get('id_user'));
+        console.log("id para mudar nome:",id_user)
+
+        if (id_user) {
+            let conn = connectDatabase();
+            conn.query(`SELECT full_name as name FROM User WHERE user_id = ${id_user};`, function (err: Error, data: RowDataPacket[]) {
+                if (!err) {
+                    res.statusCode = 200;
+                    res.json(data[0].name);
+                } else {
+                    res.statusCode = 400;
+                    res.send("Error")
+                }
+            });
+            conn.end();
+        }
+    
+    }
 }

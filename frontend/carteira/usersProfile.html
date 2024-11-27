@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="../css/perfil.css" rel="stylesheet">
+</head>
+  <body class="conteudo">
+    <button class="menu-toggle">☰</button>
+    <div class="side-menu">
+      <a href=""><img src="../img/logo-perfil.png" width="200px" style="margin-top: 10%;"></a>
+      <a href="../main/menu.html" class="links">HOME</a>
+      <a href="../accounts/usersProfile.html" class="links">PERFIL</a>
+      <div class="dropdown">
+        <a class="dropdown-toggle links" href="#"  data-bs-toggle="dropdown" aria-expanded="false"style="background-color: #002E5D;border:none;">
+          CARTEIRA
+        </a>
+        <ul class="dropdown-menu" style="background-color: #002E5D;">
+          <li><a class="dropdown-item links" href="#">Ver saldo</a></li>
+          <li><a class="dropdown-item links" href="../modalWithDrawFounds/modal.html">Saque</a></li>
+          <li><a class="dropdown-item links" href="../modalAddFounds/modal.html">Depósito</a></li>
+        </ul>
+      </div>
+      <a href="#contact" class="links">APOSTAS</a>
+      <div class="dropdown">
+        <a class="dropdown-toggle links" href="#"  data-bs-toggle="dropdown" aria-expanded="false"style="background-color: #002E5D;border:none;">
+          EVENTOS
+        </a>
+        <ul class="dropdown-menu" style="background-color: #002E5D;">
+          <li><a class="dropdown-item links" href="#">Ver meus eventos</a></li>
+          <li><a class="dropdown-item links" href="../events/addNewEvent.html">Criar novo evento</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container text-center">
+      <div class="row">
+        <h1 style="text-align: left;margin-left:16%; margin-top: 3%;color: #002E5D;" id="greeting">Olá, user!!</h1>
+      </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="tabela" style="margin-top: 3%;">
+              <div class="card" style="width: 38rem; border: none;">
+                <div class="card-body">
+                  <h3 style="text-align: left;color: #002E5D;">Minhas Apostas</h3>
+                  <div style="display: grid; place-items: center;">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Titulo</th>
+                        <th scope="col">Qtd. cotas compradas</th>
+                        <th scope="col">Total Apostado</th>
+                      </tr>
+                    </thead>
+                    <tbody id="bets">
+                    </tbody>
+                  </table>
+                  <p id="voidApostas">Nenhuma aposta realizada!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+              <div class="tabela" style="margin-top: 3%;">
+                <div class="card" style="width: 38rem; border: none;">
+                  <div class="card-body">
+                    <h3 style="text-align:left;color: #002E5D;">Histórico de Saques</h3>
+                    <div style="display: grid; place-items: center;">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Valor (R$)</th>
+                            <th scope="col">Data</th>
+                          </tr>
+                        </thead>
+                        <tbody id="withDrawals">
+                        </tbody>
+                      </table>
+                      <p id="voidSaques">Nenhum saque Realizado!</p>
+                    </div>
+                  </div>    
+               </div>
+              </div>
+          </div>
+          <div class="col">
+            <div class="col" style="margin-left: 40%;margin-top: 3%;">
+              <div class="card"style="border:none;">
+                <div class="card-body">
+                  <div class="input-group mb-3">
+                    <span class="input-group-text"style="color: #002E5D; background-color:white;"><h3>Saldo R$:</h3></span>
+                    <input type="text" class="form-control" id="balance" value="00.00" disabled>
+                    <button class="btn btn-outline-secondary" type="button" style="border-color: #002E5D;" onclick="RedirectToAddFunds();"><h3 style="color: #002E5D;">+</h3></button>
+                  </div>
+                </div>  
+              </div>    
+            </div>
+            <div class="col" style="margin-left: 40%;margin-top: 3%;">
+              <div class="card"style="border:none;">
+                <div class="card-body">
+                  <h4 style="color: #002E5D;">Histório de compra de créditos</h4>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Valor (R$)</th>
+                        <th scope="col">Data</th>
+                      </tr>
+                    </thead>
+                    <tbody id="credits">
+                     
+                    </tbody>
+                  </table>
+                  <p id="voidDepositos">Não há compra de crédito realizada!</p>
+                </div>  
+              </div>    
+            </div>
+          </div>
+          </div>
+    </div>
+    <script>
+      document.querySelector('.menu-toggle').addEventListener('click', () => {
+    document.body.classList.toggle('menu-open');
+});
+      function RedirectToAddFunds(){
+        window.location.href="../modalAddFounds/modal.html";
+      }
+async function getBalance() {
+    let id_user = '3';  // ID do usuário
+
+    if (id_user) {
+        const myHeader = new Headers();
+        myHeader.append("Content-Type", "application/json");
+        myHeader.append("id_user", id_user);
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeader,
+        };
+
+        try {
+            // Esperando a resposta da requisição
+            const resBalance = await fetch("http://localhost:3000/seeBalance", requestOptions);
+
+            if (resBalance.ok) {
+                const balance = await resBalance.json();  // Converter a resposta para JSON
+                
+                // Verificar o conteúdo da resposta
+                console.log("Resposta do backend:", balance);
+                document.getElementById('balance').value =balance;
+                } else {
+                    console.log("Campo 'saldo' não encontrado na resposta.");
+                }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    } else {
+        console.log("Erro: ID de usuário não fornecido.");
+    }
+}
+async function getUsername() {
+    let id_user = '3';  // ID do usuário
+
+    if (id_user) {
+        const myHeader = new Headers();
+        myHeader.append("Content-Type", "application/json");
+        myHeader.append("id_user", id_user);
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeader,
+        };
+
+        try {
+            // Esperando a resposta da requisição
+            const resName = await fetch("http://localhost:3000/getUsername", requestOptions);
+
+            if (resName.ok) {
+                const Name = await resName.json();  // Converter a resposta para JSON
+                
+                // Verificar o conteúdo da resposta
+                console.log("Resposta do backend:", Name);
+                document.getElementById('greeting').innerHTML = `Olá, ${Name}!`;
+                } else {
+                    console.log("Campo 'saldo' não encontrado na resposta.");
+                }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    } else {
+        console.log("Erro: ID de usuário não fornecido.");
+    }
+}
+function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const day = String(date.getDate()).padStart(2, '0');  // Dia com dois dígitos
+    const month = String(date.getMonth() + 1).padStart(2, '0');  // Mês com dois dígitos
+    const year = date.getFullYear();
+
+    const hours = String(date.getHours()).padStart(2, '0');  // Hora com dois dígitos
+    const minutes = String(date.getMinutes()).padStart(2, '0');  // Minutos com dois dígitos
+    const seconds = String(date.getSeconds()).padStart(2, '0');  // Segundos com dois dígitos
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+}
+async function getDeposits() {
+    let id_user = '3';  // ID do usuário
+
+    if (id_user) {
+        const myHeader = new Headers();
+        myHeader.append("Content-Type", "application/json");
+        myHeader.append("id_user", id_user);
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeader,
+        };
+
+        try {
+            // Esperando a resposta da requisição
+            const result = await fetch("http://localhost:3000/getDeposits", requestOptions);
+
+            if (result.ok) {
+                const resultArray = await result.json();  // Converter a resposta para JSON
+                
+                // Verificar se a resposta é válida
+                if (resultArray && resultArray.length > 0) {
+                    // Processar cada depósito e formatar a data
+                    document.getElementById("voidDepositos").style.display ="none";
+                    resultArray.forEach(item => {
+                        const formattedDate = formatDate(item.date_transation); // Formatar a data
+
+                        // Exibir os dados (valor e data formatada)
+                        const newRow = `<tr>
+                            <th scope="row">${item.value}</th>
+                            <td>${formattedDate}</td>  <!-- Data formatada -->
+                        </tr>`;
+
+                        document.getElementById("credits").insertAdjacentHTML('beforeend', newRow);
+                    });
+                } else {
+                    console.log("Nenhum depósito encontrado.");
+                }
+            } else {
+                console.log("Erro na requisição.");
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    } else {
+        console.log("Erro: ID de usuário não fornecido.");
+    }
+}
+async function getWithDrawals() {
+    let id_user = '3';  // ID do usuário
+
+    if (id_user) {
+        const myHeader = new Headers();
+        myHeader.append("Content-Type", "application/json");
+        myHeader.append("id_user", id_user);
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeader,
+        };
+
+        try {
+            // Esperando a resposta da requisição
+            const result = await fetch("http://localhost:3000/getWithDrawals", requestOptions);
+
+            if (result.ok) {
+                const resultArray = await result.json();  // Converter a resposta para JSON
+                
+                // Verificar se a resposta é válida
+                if(resultArray && resultArray.length > 0) {
+                  document.getElementById("voidSaques").style.display ="none";
+                    // Processar cada depósito e formatar a data
+                    resultArray.forEach(item => {
+                        const formattedDate = formatDate(item.date_transation); // Formatar a data
+                        const positivoValue = Math.abs(Number(item.value)); 
+                        // Exibir os dados (valor e data formatada)
+                        const newRow = `<tr>
+                            <th scope="row">${positivoValue}</th>
+                            <td>${formattedDate}</td>  <!-- Data formatada -->
+                        </tr>`;
+
+                        document.getElementById("withDrawals").insertAdjacentHTML('beforeend', newRow);
+                    });
+                } else {
+                    console.log("Nenhum Saque encontrado.");
+                }
+            } else {
+                console.log("Erro na requisição.");
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    } else {
+        console.log("Erro: ID de usuário não fornecido.");
+    }
+}
+async function getBets() {
+    let id_user = '3';  // ID do usuário
+
+    if (id_user) {
+        const myHeader = new Headers();
+        myHeader.append("Content-Type", "application/json");
+        myHeader.append("id_user", id_user);
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeader,
+        };
+
+        try {
+            // Esperando a resposta da requisição
+            const result = await fetch("http://localhost:3000/getBets", requestOptions);
+
+            if (result.ok) {
+                const resultArray = await result.json();  // Converter a resposta para JSON
+                console.log("Resposta do backend:", resultArray);
+                
+                if (resultArray && resultArray.length > 0) {
+                  document.getElementById("voidApostas").style.display ="none";
+                    
+                  resultArray.forEach(item => {
+                        const newRow = `<tr>
+                            <th scope="row">${item.titulo}</th>
+                            <td>${item.qtd_cotas}</td> 
+                            <td>${item.total_apostado}</td>
+                        </tr>`;
+
+                        document.getElementById("bets").insertAdjacentHTML('beforeend', newRow);
+                    });
+                } else {
+                    console.log("Nenhum Aposta encontrado.");
+                }
+            } else {
+                console.log("Erro na requisição.");
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    } else {
+        console.log("Erro: ID de usuário não fornecido.");
+    }
+}
+getBalance();
+getUsername();
+getDeposits();
+getWithDrawals();
+getBets();
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>

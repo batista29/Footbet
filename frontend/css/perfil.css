@@ -1,0 +1,94 @@
+
+/* Style the side menu */
+.side-menu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 270px;
+    height: 100%;
+    background-color: #002E5D;
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+/* Menu links */
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.side-menu ul li {
+    margin: 15px 0;
+}
+
+/* Menu links */
+.links {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+  }
+
+  .links:hover {
+    background-color: #a9b8c8;
+  }
+  
+/* Hide side menu on small screens initially */
+@media screen and (max-width: 768px) {
+    .side-menu {
+        transform: translateX(-100%);
+    }
+}
+
+/* Toggle Button */
+.menu-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: #002E5D;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 18px;
+    cursor: pointer;
+    display: none; /* Hidden by default */
+}
+.cards-conteudo{
+    background-color: #f0f0f0dc;
+    border-radius: 20%; 
+}
+.tabela {
+    margin-left: 35%;
+    background-color: #f0f0f0dc;
+    border-radius: 20%;
+    
+  }
+  .tabela2 {
+    margin-left: 0%;
+    
+  }
+  .h3{
+    color: #002E5D;
+  }
+
+/* Show button on small screens */
+@media screen and (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+        background: #002E5D;
+        color: white;
+        border-radius: 200px;
+    }
+}
+
+/* Show the menu when the body has 'menu-open' class */
+body.menu-open .side-menu {
+    transform: translateX(0);
+}
+.conteudo{
+    background-color: #f0f0f0dc;
+}

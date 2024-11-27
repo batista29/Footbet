@@ -52,21 +52,90 @@ export namespace walletHandler {
 
     export async function getBalance(req: Request, res: Response) {
         const id_user = Number(req.get('id_user'));
-        console.log(id_user)
+        console.log("id para ver saldo: ",id_user)
 
         if (id_user) {
             let conn = connectDatabase();
             conn.query(`SELECT SUM(value) as 'saldo' FROM Transacao WHERE user_id = ${id_user};`, function (err: Error, data: RowDataPacket[]) {
                 if (!err) {
                     res.statusCode = 200;
-                    res.send('Saldo: ' + data[0].saldo);
+                    res.send(data[0].saldo);
                 } else {
                     res.statusCode = 400;
                     res.send("Error")
                 }
             });
+            conn.end();
         }
     }
+
+    //Ester
+
+export async function getDeposits(req: Request, res: Response) {
+    const id_user = Number(req.get('id_user'));  
+    console.log("Id para ver depósitos:", id_user);
+
+    if (!id_user) {
+        return res.status(400).json({ message: "ID do usuário não fornecido." });
+    }
+
+    try {
+        const conn = await connectDatabase();
+        conn.query(
+            `SELECT value, date_transation FROM Transacao WHERE user_id = ? AND type = 'deposito'`,
+            [id_user],
+            (err: Error, data: RowDataPacket[]) => {
+                if (err) {
+                    console.error("Erro na consulta ao banco:", err);
+                    return res.status(500).json({ message: "Erro interno no servidor." });
+                }
+
+                if (data.length > 0) {
+                    res.status(200).json(data);
+                } else {
+                    res.status(404).json({ message: "Nenhum depósito encontrado." });
+                }
+            }
+        );
+        conn.end();
+    } catch (error) {
+        console.error("Erro na conexão ou consulta ao banco:", error);
+        return res.status(500).json({ message: "Erro ao acessar o banco de dados." });
+    }
+}
+
+export async function getWithDrawals(req: Request, res: Response) {
+    const id_user = Number(req.get('id_user'));  
+    console.log("Id para ver saques:", id_user);
+
+    if (!id_user) {
+        return res.status(400).json({ message: "ID do usuário não fornecido." });
+    }
+
+    try {
+        const conn = await connectDatabase();
+        conn.query(
+            `SELECT value, date_transation FROM Transacao WHERE user_id = ? AND type = 'deposito'`,
+            [id_user],
+            (err: Error, data: RowDataPacket[]) => {
+                if (err) {
+                    console.error("Erro na consulta ao banco:", err);
+                    return res.status(500).json({ message: "Erro interno no servidor." });
+                }
+
+                if (data.length > 0) {
+                    res.status(200).json(data);
+                } else {
+                    res.status(404).json({ message: "Nenhum depósito encontrado." });
+                }
+            }
+        );
+        conn.end();
+    } catch (error) {
+        console.error("Erro na conexão ou consulta ao banco:", error);
+        return res.status(500).json({ message: "Erro ao acessar o banco de dados." });
+    }
+}
 
     async function seeBalance(id_user: number) {
         return await new Promise((resolve, reject) => {

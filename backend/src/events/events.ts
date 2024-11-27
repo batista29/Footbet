@@ -406,12 +406,13 @@ export namespace EventsHandler {
     export const finishEventRoute: RequestHandler = async (req, res) => {
         const connection = await connectDatabase();
         try {
-            const pId = Number(req.get('id'));
+            const pId = Number(req.get('id_evento'));
             const pId_user = Number(req.get('id_user'));
             const pBetResult = req.get('betResult');
+            console.log(pId,pBetResult,pId_user);
 
             if (!pId || !pBetResult || !pId_user) {
-                res.status(400).send('Dados inválidos.');
+                res.status(400).json({message: 'Dados inválidos.'});
                 return;
             }
 
@@ -423,19 +424,19 @@ export namespace EventsHandler {
                     [pId]
                 );
                 if (rows.length > 0 && rows[0].status === 'encerrado') {
-                    res.status(403).send("Este evento já foi finalizado!");
+                    res.status(403).json({message: "Este evento já foi finalizado!"});
                 } else {
                     await finishEvent(Number(pId), String(pBetResult));
-                    res.status(200).send('Evento encerrado com sucesso.');
+                    res.status(200).json({message:'Evento encerrado com sucesso.'});
                 }
             } else {
-                res.status(403).send('Acesso Negado.');
+                res.status(403).json({message: 'Acesso Negado.'});
             }
 
 
         } catch (error) {
             console.error('Erro na rota:', error);
-            res.status(500).send('Erro ao encerrar o evento.');
+            res.status(500).json({message: 'Erro ao encerrar o evento.'});
         }
     }
     export const getEvents: RequestHandler = async (req: Request, res: Response): Promise<void> => {
@@ -511,4 +512,64 @@ export namespace EventsHandler {
         }
     };
 
+    // Ester
+    export async function getbets(req: Request, res: Response) {
+        const id_user = Number(req.get('id_user'));  
+        console.log("Id para ver Apostas:", id_user);
+    
+        if (!id_user) {
+            return res.status(400).json({ message: "ID do usuário não fornecido." });
+        }
+    
+        try {
+            const conn = await connectDatabase();
+            
+            // Usando 'execute' ou 'query' com 'await'
+            const [rows] = await conn.execute(
+                `SELECT e.titulo, p.qtd_cotas, p.total_apostado 
+                 FROM Evento as e
+                 JOIN Participa as p ON e.id_evento = p.id_evento 
+                 WHERE p.id_participante = ?`,
+                [id_user]
+            );
+            
+            if (rows.length > 0) {
+                console.log("Encontrou");
+                res.status(200).json(rows); // Retorna os dados encontrados
+                console.log("Dados encontrados: ", rows);
+            } else {
+                res.status(404).json({ message: "Nenhuma aposta encontrada." });
+            }
+    
+        } catch (error) {
+            console.error("Erro na conexão ou consulta ao banco:", error);
+            return res.status(500).json({ message: "Erro ao acessar o banco de dados." });
+        }
+    }
+    
+
+    export async function getAllEvents(req: Request, res: Response) {
+        let conn;
+        try {
+            conn = await connectDatabase(); // Conectando ao banco
+            // Usando await para consultar com promessas
+            const [rows] = await conn.execute(
+                `SELECT id_evento, id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, status, email FROM Evento`
+            );
+            
+            if (rows.length > 0) {
+                return res.status(200).json(rows);
+            } else {
+                return res.status(404).json({ message: "Nenhum evento encontrado." });
+            }
+        } catch (error) {
+            console.error("Erro na conexão ou consulta ao banco:", error);
+            return res.status(500).json({ message: "Erro ao acessar o banco de dados." });
+        } finally {
+            if (conn) {
+                conn.end();
+            }
+        }
+    }
+    
 }
