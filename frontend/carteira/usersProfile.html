@@ -124,8 +124,9 @@
         window.location.href="../modalAddFounds/modal.html";
       }
 async function getBalance() {
-    let id_user = '3';  // ID do usuário
-
+  let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+    let id_user = infos_user.user_id;  // ID do usuário
+    console.log(id_user);
     if (id_user) {
         const myHeader = new Headers();
         myHeader.append("Content-Type", "application/json");
@@ -157,7 +158,9 @@ async function getBalance() {
     }
 }
 async function getUsername() {
-    let id_user = '3';  // ID do usuário
+    let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+    let id_user = infos_user.user_id;  // ID do usuário
+    console.log(id_user);;  // ID do usuário
 
     if (id_user) {
         const myHeader = new Headers();
@@ -203,7 +206,9 @@ function formatDate(dateString) {
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 async function getDeposits() {
-    let id_user = '3';  // ID do usuário
+  let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+    let id_user = infos_user.user_id;  // ID do usuário
+    console.log(id_user);;  // ID do usuário
 
     if (id_user) {
         const myHeader = new Headers();
@@ -251,7 +256,9 @@ async function getDeposits() {
     }
 }
 async function getWithDrawals() {
-    let id_user = '3';  // ID do usuário
+  let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+    let id_user = infos_user.user_id;  // ID do usuário
+    console.log(id_user);  // ID do usuário
 
     if (id_user) {
         const myHeader = new Headers();
@@ -299,7 +306,9 @@ async function getWithDrawals() {
     }
 }
 async function getBets() {
-    let id_user = '3';  // ID do usuário
+  let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+    let id_user = infos_user.user_id;  
+    console.log(id_user);  // ID do usuário
 
     if (id_user) {
         const myHeader = new Headers();

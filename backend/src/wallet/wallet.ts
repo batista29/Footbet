@@ -115,7 +115,7 @@ export async function getWithDrawals(req: Request, res: Response) {
     try {
         const conn = await connectDatabase();
         conn.query(
-            `SELECT value, date_transation FROM Transacao WHERE user_id = ? AND type = 'deposito'`,
+            `SELECT value, date_transation FROM Transacao WHERE user_id = ? AND type = 'saque'`,
             [id_user],
             (err: Error, data: RowDataPacket[]) => {
                 if (err) {

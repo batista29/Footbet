@@ -92,4 +92,11 @@ nextButton3.addEventListener('click', () => {
 function updateCarousel3() {
   carousel3.style.transform = `translateX(${scrollPosition3}px)`;
 }
+//verificar autenticacao
+let infos_user= JSON.parse(localStorage.getItem('dados_user')|| '{}');
+    let id_user = infos_user.user_id;  // ID do usuário
+    console.log(id_user);;  // ID do usuário
+if(!id_user){
+   document.getElementById('btn-perfil').style.display = "none";
+}
 

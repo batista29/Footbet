@@ -3,9 +3,12 @@ async function doAddFounds() {
     const valueTransaction = parseFloat(document.getElementById('valueAddFounds').value.replace(',', '.'));
 
     if (valueTransaction) {
+        let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+        let id_user,id_wallet = infos_user.user_id;  // ID do usuário
+        console.log(id_user);;  // ID do usuário
         const myHeaders = new Headers();
-        myHeaders.append("id_wallet", "3");
-        myHeaders.append("id_user", "3");
+        myHeaders.append("id_wallet", id_wallet);
+        myHeaders.append("id_user", id_user);
         myHeaders.append("value", valueTransaction);
 
         const requestOptions = {

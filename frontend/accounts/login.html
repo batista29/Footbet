@@ -67,8 +67,15 @@
                     const response = await fetch(`${API_URL}/login`, requestOptions);
 
                     if (response.ok) {
-                        alert(`Sucesso`);
-                        //window.location.href = "#";
+                        //alert(`Sucesso`);
+                        if(salvarLogin.user_id == 1 || salvarLogin.user_id == 2){
+                            window.open("../admin/admin.html", "_blank");
+                            //window.location.href("../admin/admin.html");
+                        }else{
+                           window.open("../main/menu.html", "_blank");
+                           //window.location.href("../carteira/usersProfile.html");
+                        }
+                        
                     } else {
                         alert(`Erro`);
                     }
@@ -104,16 +111,22 @@
 
                 let salvarLogin = {
                     email: message[0].email,
-                    senha: message[0].password_user
+                    senha: message[0].password_user,
+                    user_id: message[0].user_id,
+                    type_user: message[0].type_user,
                 }
 
                 localStorage.setItem('dados_user', JSON.stringify(salvarLogin));
 
                 if (response.ok) {
-                    alert(`Sucesso:`);
-
-                    // Redirecionar para outra página
-                    //window.location.href = "#";
+                    //alert(`Sucesso:`);
+                    if(salvarLogin.user_id == 1 || salvarLogin.user_id == 2 ){
+                            window.open("../admin/admin.html", "_blank");
+                            //window.location.href("../admin/admin.html");
+                        }else{
+                           window.open("../main/menu.html", "_blank");
+                           //window.location.href("../carteira/usersProfile.html");
+                        }
                 } else {
                     alert(`Erro: ${message}`);
                 }
