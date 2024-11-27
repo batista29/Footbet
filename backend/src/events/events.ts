@@ -515,6 +515,7 @@ export namespace EventsHandler {
             }
         }
     };
+
     //Mostrar eventos mais apostados
     export const topEvents: RequestHandler = async (req: Request, res: Response): Promise<void> => {
         let connection;
@@ -545,16 +546,15 @@ export namespace EventsHandler {
     };
 
     //Eventos por categoria
-    //Mostrar eventos mais apostados
     export const category: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-        const category = req.get('category');
+        const categoria = req.get('categoria');
 
         let connection;
 
         try {
             connection = await connectDatabase();
             const results = await connection.execute(
-                `SELECT * FROM evento WHERE categoria = ${category};`,
+                `SELECT * FROM evento WHERE categoria = '${categoria}';`,
                 // Coloca os '%' no valor do parâmetro
             );
 
