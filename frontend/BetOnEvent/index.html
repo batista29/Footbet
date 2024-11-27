@@ -7,6 +7,7 @@
     <title> Footbet </title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
 <body>
@@ -16,10 +17,10 @@
             <img src="logo.png" alt="logo" width="140" height="140">
         </div>
         <nav class="nav">
-            <a href="#home" class="event-button">Home</a>
+            <a href="../main/menu.html" class="event-button">Home</a>
             <a href="#eventos" class="event-button">Eventos</a>
-            <a href="#sobre" class="event-button">Sobre</a>
-            <a href="#contato" class="event-button">Contato</a>
+            <a href="../main/menu.html#sobre" class="event-button">Sobre</a>
+            <a href="../main/menu.html#contato" class="event-button">Contato</a>
         </nav>
 
         <button class="menu-toggle">
@@ -43,24 +44,63 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h1 class="team-name" id="team1">PALMEIRAS</h1>
-            <h2 class="vs-text">VS</h2>
-            <h1 class="team-name" id="team2">CORINTHIANS</h1>
-            <p>Jogo válido pela 30ª rodada do Brasileirão!</p>
-            <p class="subtext">Quem irá ganhar? Aposte já!</p>
+            <h1 class="team-name" id="titulo"> PALMEIRAS VS CORINTHIANS</h1>
+            <h2 id="descricao">Jogo válido pela 30ª rodada do Brasileirão! Quem irá ganhar? Aposte já!</h2>
             <br>
             <div class="hero-buttons">
-                <button id="openModal" class="button primary" onclick="submitEvent()">Apostar</button>
+                <button id="openModal" class="button primary" type="button" data-bs-toggle="modal" data-bs-target="#Modal">Apostar</button>
             </div>
         </div>
         <div class="hero-image">
             <img src="jogador.png" alt="Jogador de futebol" />
         </div>
     </section>
-
+     <!-- Modal-->
+     <div class="modal fade" id="Modal" tabindex="-1" 
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h1 class="modal-title fs-5" id="exampleModalLabel">Finalizar Aposta</h1>
+             <button type="button" class="btn-close" 
+             data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+             <form>
+                 <div class="mb-3 m-0">
+                    <p>Escolha uma das opções abaixo:</p>
+                    <label>
+                        <strong><input type="radio" name="aposta" value="s" required> Sim </strong>
+                    </label>
+                    <br>
+                    <label>
+                        <strong><input type="radio" name="aposta" value="n" required> Não </strong>
+                    </label>
+                 </div>
+                 <div class="mb-3">
+                    <p>Valor de cada Cota: <strong>R$ 00.00</strong></p>
+                 </div>
+                 <div class="mb-3">
+                    <input type="number" id="qtd_cotas" name="qtd_cotas" class="form-control"
+                    placeholder="Quantidade de cotas" required>
+                 </div>
+               </form>
+         </div>
+         <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" 
+             data-bs-dismiss="modal">Cancelar</button>
+             <button type="button" class="btn btn-primary">Salvar</button>
+         </div>
+     </div>
+     </div>
+ </div>
     <div id="modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Avaliar Evento</h1>
+                <button type="button" class="btn-close" 
+                data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
             <h2>Apostar no Jogo</h2>
             <h3>Palmeiras irá vencer o Corinthians?</h3>
             <form id="betForm">
@@ -103,6 +143,8 @@
         </div>
     </footer>
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  
 </body>
 
 </html>
