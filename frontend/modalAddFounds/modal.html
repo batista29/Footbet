@@ -18,7 +18,17 @@
                 <button class="btnOption" id="btnWithDrawFounds">Sacar</button>
             </div>
             <div class="inputsData">
-                <label for="valueAddFounds">Digite o valor:</label>
+                    <p>Escolha uma das opções abaixo:</p>
+                    <label>
+                        <strong><input type="radio" name="credito">Cartão Débito/Crédito </strong>
+                    </label>
+                    <label>
+                        <strong><input type="radio" name="credito">Boleto</strong>
+                    </label>
+                    <label>
+                        <strong><input type="radio" name="pix">Pix </strong>
+                    </label>
+                <label for="valueAddFounds" style="margin-top: 3vh;">Digite o valor:</label>
                 <input id="valueAddFounds" placeholder=" Ex: 20.00" type="number">
                 <button onclick="doAddFounds()">Confirmar</button>
             </div>

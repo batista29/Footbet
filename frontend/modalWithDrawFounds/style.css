@@ -24,7 +24,7 @@ button {
 
 .optionsFoundBlock {
     display: block;
-    height: 45%;
+    height: 60%;
     width: 25%;
     background-color: #e0e0e0;
     justify-items: center;
@@ -61,7 +61,7 @@ button {
 .inputsData {
     display: grid;
     justify-items: center;
-    margin-top: 90px;
+    margin-top: 60px;
     width: 100%;
 }
 
