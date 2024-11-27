@@ -1,7 +1,7 @@
 //Função principal para fazer transações
 async function doWithDraw() {
     const valueTransaction = parseFloat(document.getElementById('valueFoundsWithDraw').value.replace(',', '.'));
-
+//teste de commit
     if (valueTransaction) {
 
         const myHeaders = new Headers();

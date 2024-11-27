@@ -98,5 +98,6 @@ let infos_user= JSON.parse(localStorage.getItem('dados_user')|| '{}');
     console.log(id_user);;  // ID do usuário
 if(!id_user){
    document.getElementById('btn-perfil').style.display = "none";
+   //teste de commit
 }
 

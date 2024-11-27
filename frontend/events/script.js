@@ -9,10 +9,14 @@ async function AddEvent() {
     const email = document.getElementById('email').value;
     console.log(title, description, eventDate,betsStart, betsEnd,value,email);
 
+    let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+    let id_user = infos_user.user_id;  // ID do usuário
+    console.log(id_user);;  // ID do usuário
+
     if (title && description && eventDate &&betsStart &&betsEnd &&value && email) {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type","application/JSON");
-        myHeaders.append("id_criador","1");
+        myHeaders.append("id_criador",id_user);
         myHeaders.append("title",title);
         myHeaders.append("description",description);
         myHeaders.append("eventDate",eventDate);
