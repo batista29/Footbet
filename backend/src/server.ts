@@ -43,6 +43,8 @@ routes.post("/getWithDrawals",walletHandler.getWithDrawals);
 routes.post("/getBets",EventsHandler.getbets);
 routes.get("/getAllEvents",EventsHandler.getAllEvents);
 
+routes.get('/topEvents', EventsHandler.topEvents);
+
 server.use(routes);
 
 server.listen(port, () => {

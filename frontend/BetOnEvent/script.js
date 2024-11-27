@@ -69,7 +69,7 @@ document.getElementById("betForm").addEventListener("submit", async (event) => {
             },
             body: JSON.stringify({
                 qtd_cotas: qtd_cotas,
-                id_evento: 2,
+                id_evento: 13,
                 valor_cota: valor_cota,
                 aposta: aposta,
             }),
