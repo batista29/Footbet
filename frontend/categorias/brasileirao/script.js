@@ -6,6 +6,11 @@ function apostar(id_evento) {
     window.location.href = '../../BetOnEvent/index.html';
 }
 
+function sair() {
+    localStorage.clear();
+    window.location.href = '../../accounts/login.html';
+}
+
 // Função para formatar a data
 function formatDate(dateString) {
     const date = new Date(dateString);
@@ -37,7 +42,7 @@ async function carregar() {
 
         // Limpar conteúdos antigos, se necessário
         eventosContainer.innerHTML = '';
-        
+
         message.forEach(e => {
             const card = document.createElement('div');
             card.className = 'card';

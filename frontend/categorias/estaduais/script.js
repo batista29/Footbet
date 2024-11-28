@@ -1,3 +1,16 @@
+function apostar(id_evento) {
+    let id = id_evento;
+    console.log(id);
+
+    localStorage.setItem('id_aposta', id);
+    window.location.href = '../../BetOnEvent/index.html';
+}
+
+function sair() {
+    localStorage.clear();
+    window.location.href = '../../accounts/login.html';
+}
+
 // Função para formatar a data
 function formatDate(dateString) {
     const date = new Date(dateString);
