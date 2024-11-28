@@ -1,32 +1,38 @@
-.conteudo{
-    background: linear-gradient(-90deg,#FFFFFF 5%,#002E5D 5%,#34587E 16%,#406386 37%,#FFFFFF 120%);
-    margin:0;
+.conteudo {
+    background: linear-gradient(-90deg, #FFFFFF 5%, #002E5D 5%, #34587E 16%, #406386 37%, #FFFFFF 120%);
+    margin: 0;
+}
+
+.card-altura {
+    height: 100vh;
+    border: none;
+    background-color: #FFFFFF;
+    border-radius: 10% 0 0 10%;
+    margin-right: 0;
+}
+
+.card-conteudo {
+    padding: 10%;
+}
+
+.titulo-card {
+    color: #002E5D;
+    text-align: center;
+}
+
+.orientacoes {
+    color: #002E5D;
+    margin-top: 30vh;
+    margin-left: 10vh;
+}
+
+@media (max-width: 768px) {
+    .orientacoes {
+        display: none;
     }
-    
-    .card-altura{
-        height: 100vh;
-        border:none;
-        background-color: #FFFFFF;
-        border-radius: 10% 0 0 10%;
-        margin-right: 0;
-    }
-    .card-conteudo{
-        padding:10%;
-    }
-    
-    .titulo-card{
-        color: #002E5D;
-        text-align: center;
-    }
-    
-    .orientacoes{
-        color: #002E5D;
-        margin-top: 30vh;
-        margin-left: 10vh;
-    }
-    
-    @media (max-width: 768px) {
-        .orientacoes {
-          display: none;
-        }
-      }
+}
+
+.label-group{
+    display: flex;
+    justify-content: space-around;
+}
