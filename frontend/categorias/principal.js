@@ -1,3 +1,11 @@
+function apostar(id_evento) {
+  let id = id_evento;
+  console.log(id);
+
+  localStorage.setItem('id_aposta', id);
+  window.location.href='../BetOnEvent/index.html';
+}
+
 async function pesquisar() {
   const inpPesquisa = document.getElementById('inpPesquisa').value;
   console.log(inpPesquisa);
@@ -79,7 +87,7 @@ async function todos() {
                   <div class="categoria">${e.descricao || 'Descrição indisponível'}</div>
                   <div class="valor">Valor da cota: R$ ${e.valor_cota || '0.00'}</div>
               </div>
-              <a href="#" class="button">Ver</a>
+              <button class="button" onclick="apostar(${e.id_evento})">Ver</button>
           `;
 
       // Adicionar o card ao contêiner
@@ -89,7 +97,7 @@ async function todos() {
   } catch (error) {
     console.error("Erro ao conectar ao servidor:", error);
     alert("Erro ao conectar ao servidor. Por favor, tente novamente mais tarde.");
-   
+
     alert("Evento não existe ou indisponivel");
   }
 }
@@ -131,7 +139,7 @@ async function topBets() {
                   <div class="categoria">${e.descricao || 'Descrição indisponível'}</div>
                   <div class="valor">Valor da cota: R$ ${e.valor_cota || '0.00'}</div>
               </div>
-              <a href="#" class="button">Ver</a>
+             <button class="button" onclick="apostar(${e.id_evento})">Ver</button>
           `;
 
       // Adicionar o card ao contêiner
@@ -141,7 +149,7 @@ async function topBets() {
   } catch (error) {
     console.error("Erro ao conectar ao servidor:", error);
     alert("Erro ao conectar ao servidor. Por favor, tente novamente mais tarde.");
-   
+
     alert("Evento não existe ou indisponivel");
   }
 }

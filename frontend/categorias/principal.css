@@ -8,6 +8,10 @@
   html {
     scroll-behavior: smooth; /* Ativa o scroll suave */
   }
+
+  button{
+    cursor: pointer;
+  }
   
   body {
     font-family: 'Arial', sans-serif;
