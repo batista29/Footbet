@@ -187,12 +187,12 @@ export namespace EventsHandler {
         const qtd_cotas = Number(req.get('qtd_cotas'));
         const valor_cota = Number(req.get('valor_cota'));
         const aposta = req.get('aposta');
-        console.log(email,id_evento,qtd_cotas,valor_cota,aposta)
-         // Verificar se algum dos parâmetros é undefined
-    if (!email || !id_evento || !qtd_cotas || !valor_cota || !aposta) {
-        console.log("Erro: Dados inválidos. Parâmetros obrigatórios não fornecidos.");
-        return res.status(400).send("Erro: Todos os parâmetros são obrigatórios.");
-    }
+        console.log(email, id_evento, qtd_cotas, valor_cota, aposta)
+        // Verificar se algum dos parâmetros é undefined
+        if (!email || !id_evento || !qtd_cotas || !valor_cota || !aposta) {
+            console.log("Erro: Dados inválidos. Parâmetros obrigatórios não fornecidos.");
+            return res.status(400).send("Erro: Todos os parâmetros são obrigatórios.");
+        }
         const connection = await connectDatabase();
         try {
             const value = valor_cota * qtd_cotas;
@@ -669,7 +669,7 @@ export namespace EventsHandler {
             conn = await connectDatabase(); // Conectando ao banco
             // Usando await para consultar com promessas
             const [rows] = await conn.execute(
-                `SELECT titulo, descricao, dataEvento, inicioApostas, fimApostas, valor_cota FROM Evento where id_evento = ${id_evento}`
+                `SELECT id_evento, titulo, descricao, dataEvento, inicioApostas, fimApostas, valor_cota FROM Evento where id_evento = ${id_evento}`
             );
 
             if (rows.length > 0) {

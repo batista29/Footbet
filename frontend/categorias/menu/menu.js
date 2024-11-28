@@ -103,7 +103,7 @@ async function todos() {
 
   } catch (error) {
     console.error("Erro ao conectar ao servidor:", error);
-   
+
     alert("Evento não existe ou indisponivel");
   }
 }
@@ -154,7 +154,7 @@ async function topBets() {
 
   } catch (error) {
     console.error("Erro ao conectar ao servidor:", error);
-   
+
     alert("Evento não existe ou indisponivel");
   }
 }
