@@ -68,14 +68,14 @@
 
                     if (response.ok) {
                         //alert(`Sucesso`);
-                        if(salvarLogin.user_id == 1 || salvarLogin.user_id == 2){
+                        if (loginSalvo.user_id == 1 || loginSalvo.user_id == 2) {
                             window.open("../admin/admin.html", "_blank");
                             //window.location.href("../admin/admin.html");
-                        }else{
-                           window.open("../categorias/principal.html", "_blank");
-                           //window.location.href("../carteira/usersProfile.html");
+                        } else {
+                            window.open("../categorias/principal.html", "_blank");
+                            //window.location.href("../carteira/usersProfile.html");
                         }
-                        
+
                     } else {
                         alert(`Erro`);
                     }
@@ -120,13 +120,13 @@
 
                 if (response.ok) {
                     //alert(`Sucesso:`);
-                    if(salvarLogin.user_id == 1 || salvarLogin.user_id == 2 ){
-                            window.open("../admin/admin.html", "_blank");
-                            //window.location.href("../admin/admin.html");
-                        }else{
-                           window.open("../categorias/principal.html", "_blank");
-                           //window.location.href("../carteira/usersProfile.html");
-                        }
+                    if (salvarLogin.user_id == 1 || salvarLogin.user_id == 2) {
+                        window.open("../admin/admin.html", "_blank");
+                        //window.location.href("../admin/admin.html");
+                    } else {
+                        window.open("../categorias/principal.html", "_blank");
+                        //window.location.href("../carteira/usersProfile.html");
+                    }
                 } else {
                     alert(`Erro: ${message}`);
                 }
