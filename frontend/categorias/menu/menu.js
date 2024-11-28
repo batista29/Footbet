@@ -1,4 +1,63 @@
-async function carregar() {
+async function pesquisar() {
+  const inpPesquisa = document.getElementById('inpPesquisa').value;
+  console.log(inpPesquisa);
+
+  const myHeaders = new Headers();
+
+  myHeaders.append("keyword", `${inpPesquisa}`);
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch("http://127.0.0.1:3000/searchEvents", requestOptions);
+
+    console.log(inpPesquisa);
+    let message = await response.text();
+    message = JSON.parse(message);
+
+    const eventosContainer = document.querySelector('.carousel'); // A div onde os cards ficarão
+
+    // Limpar conteúdos antigos, se necessário
+    eventosContainer.innerHTML = '';
+
+    message.forEach(e => {
+      const data = new Date(e.inicioApostas);
+
+      const dia = data.getDate().toString().padStart(2, '0');
+      const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+      const ano = data.getFullYear();
+
+      const dataBR = `${dia}/${mes}/${ano}`;
+
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      // Adicionar os dados ao card
+      card.innerHTML = `
+              <span class="data">${dataBR || 'Data indisponível'}</span>
+              <h4>${e.titulo || 'Título indisponível'}</h4>
+              <div class="info">
+                  <div class="categoria">${e.descricao || 'Descrição indisponível'}</div>
+                  <div class="valor">Valor da cota: R$ ${e.valor_cota || '0.00'}</div>
+              </div>
+              <a href="#" class="button">Ver</a>
+          `;
+
+      // Adicionar o card ao contêiner
+      eventosContainer.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error("Erro ao conectar ao servidor:", error);
+    alert("Evento não existe ou indisponivel");
+  }
+}
+
+async function todos() {
   const requestOptions = {
     method: "GET",
     redirect: "follow"
@@ -16,12 +75,20 @@ async function carregar() {
     eventosContainer.innerHTML = '';
 
     message.forEach(e => {
+      const data = new Date(e.inicioApostas);
+
+      const dia = data.getDate().toString().padStart(2, '0');
+      const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+      const ano = data.getFullYear();
+
+      const dataBR = `${dia}/${mes}/${ano}`;
+
       const card = document.createElement('div');
       card.className = 'card';
 
       // Adicionar os dados ao card
       card.innerHTML = `
-              <span class="data">${e.dataEvento || 'Data indisponível'}</span>
+              <span class="data">${dataBR || 'Data indisponível'}</span>
               <h4>${e.titulo || 'Título indisponível'}</h4>
               <div class="info">
                   <div class="categoria">${e.descricao || 'Descrição indisponível'}</div>
@@ -36,8 +103,65 @@ async function carregar() {
 
   } catch (error) {
     console.error("Erro ao conectar ao servidor:", error);
-    alert("Erro ao conectar ao servidor. Por favor, tente novamente mais tarde.");
+   
+    alert("Evento não existe ou indisponivel");
   }
+}
+
+async function topBets() {
+  const requestOptions = {
+    method: "GET",
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch("http://127.0.0.1:3000/topEvents", requestOptions);
+
+    let message = await response.text();
+    message = JSON.parse(message);
+
+    const eventosContainer = document.querySelector('.carousel2'); // A div onde os cards ficarão
+
+    // Limpar conteúdos antigos, se necessário
+    eventosContainer.innerHTML = '';
+
+    message.forEach(e => {
+      const data = new Date(e.inicioApostas);
+
+      const dia = data.getDate().toString().padStart(2, '0');
+      const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+      const ano = data.getFullYear();
+
+      const dataBR = `${dia}/${mes}/${ano}`;
+
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      // Adicionar os dados ao card
+      card.innerHTML = `
+              <span class="data">${dataBR || 'Data indisponível'}</span>
+              <h4>${e.titulo || 'Título indisponível'}</h4>
+              <div class="info">
+                  <div class="categoria">${e.descricao || 'Descrição indisponível'}</div>
+                  <div class="valor">Valor da cota: R$ ${e.valor_cota || '0.00'}</div>
+              </div>
+              <a href="#" class="button">Ver</a>
+          `;
+
+      // Adicionar o card ao contêiner
+      eventosContainer.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error("Erro ao conectar ao servidor:", error);
+   
+    alert("Evento não existe ou indisponivel");
+  }
+}
+
+async function carregar() {
+  todos();
+  topBets();
 }
 
 carousel = document.querySelector('.carousel');
@@ -134,4 +258,3 @@ nextButton3.addEventListener('click', () => {
 function updateCarousel3() {
   carousel3.style.transform = `translateX(${scrollPosition3}px)`;
 }
-

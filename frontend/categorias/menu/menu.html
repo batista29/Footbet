@@ -19,9 +19,9 @@
     <nav class="navbar bg-body-tertiary">
       <div class="container-fluid">
         <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Buscar eventos por palavra-chave"
+          <input id="inpPesquisa" class="form-control me-2" type="text" placeholder="Buscar eventos por palavra-chave"
             aria-label="Search" style="width: 310px;">
-          <button class="btn btn-outline-success" type="submit">Buscar</button>
+          <button class="btn btn-outline-success" type="button" onclick="pesquisar()">Buscar</button>
         </form>
       </div>
     </nav>
@@ -78,119 +78,11 @@
         <button class="carousel-button prev2" aria-label="Anterior">&#8249;</button>
         <div class="carousel2 pag2">
           <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
+            <span class="data" id="data-evento">Data</span>
+            <h4 id="titulo-evento">titulo</h4>
             <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Corinthians</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 3.45</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">19/11/24</span>
-            <h4>Jogo do Flamengo</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 6.75</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
-            </div>
-            <a href="#" class="button">Ver</a>
-          </div>
-          <div class="card">
-            <span class="data">18/11/24</span>
-            <h4>Jogo do Palmeiras</h4>
-            <div class="info">
-              <div class="categoria">Categoria: Futebol</div>
-              <div class="valor">Valor da cota (R$): 5.65</div>
+              <div class="categoria" id="descricao-evento">descricao</div>
+              <div class="valor" id="valor-cota">Valor da cota (R$)</div>
             </div>
             <a href="#" class="button">Ver</a>
           </div>

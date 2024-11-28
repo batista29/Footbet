@@ -499,7 +499,7 @@ export namespace EventsHandler {
         try {
             connection = await connectDatabase();
             const results = await connection.execute(
-                `SELECT * FROM Evento WHERE titulo LIKE '%${keyword}%' OR descricao LIKE '%${keyword}%'`,
+                `SELECT * FROM Evento WHERE titulo LIKE '%${keyword}%' OR descricao LIKE '%${keyword}%' OR categoria LIKE '%${keyword}%' AND status = 'ativo'`,
                 // Coloca os '%' no valor do parâmetro
             );
 
