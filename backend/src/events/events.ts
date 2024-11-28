@@ -183,13 +183,18 @@ export namespace EventsHandler {
     // Função para apostar em um evento
     export const betOnEvent: RequestHandler = async (req, res) => {
         const email = req.get('email');
-        const user_id = Number(req.get('user_id'));
-        console.log('qtd_cotas');
-        console.log("Corpo da requisição recebido:", req.body);
-
+        const id_evento = Number(req.get('id_evento'));
+        const qtd_cotas = Number(req.get('qtd_cotas'));
+        const valor_cota = Number(req.get('valor_cota'));
+        const aposta = req.get('aposta');
+        console.log(email,id_evento,qtd_cotas,valor_cota,aposta)
+         // Verificar se algum dos parâmetros é undefined
+    if (!email || !id_evento || !qtd_cotas || !valor_cota || !aposta) {
+        console.log("Erro: Dados inválidos. Parâmetros obrigatórios não fornecidos.");
+        return res.status(400).send("Erro: Todos os parâmetros são obrigatórios.");
+    }
         const connection = await connectDatabase();
         try {
-            const { qtd_cotas, id_evento, valor_cota, aposta } = req.body;
             const value = valor_cota * qtd_cotas;
 
             // Verifica se o usuário existe pelo email
@@ -221,7 +226,7 @@ export namespace EventsHandler {
 
             if (balance < value) {
                 console.log("Saldo insuficiente! Saldo disponível:", balance, "Valor da aposta:", value);
-                return res.status(400).send("Saldo insuficiente! Por favor, faça um crédito na sua carteira.");
+                return res.status(400).json("Saldo insuficiente! Por favor, faça um crédito na sua carteira.");
             } else {
                 // Registrar a aposta
                 await connection.execute(
@@ -548,7 +553,7 @@ export namespace EventsHandler {
     //Eventos por categoria
     export const category: RequestHandler = async (req: Request, res: Response): Promise<void> => {
         const categoria = req.get('categoria');
-
+        console.log(categoria);
         let connection;
 
         try {
@@ -617,6 +622,54 @@ export namespace EventsHandler {
             // Usando await para consultar com promessas
             const [rows] = await conn.execute(
                 `SELECT id_evento, id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, status, email FROM Evento where status = 'ativo'`
+            );
+
+            if (rows.length > 0) {
+                return res.status(200).json(rows);
+            } else {
+                return res.status(404).json({ message: "Nenhum evento encontrado." });
+            }
+        } catch (error) {
+            console.error("Erro na conexão ou consulta ao banco:", error);
+            return res.status(500).json({ message: "Erro ao acessar o banco de dados." });
+        } finally {
+            if (conn) {
+                conn.end();
+            }
+        }
+    }
+    export async function getAllEventsAdmin(req: Request, res: Response) {
+        let conn;
+        try {
+            conn = await connectDatabase(); // Conectando ao banco
+            // Usando await para consultar com promessas
+            const [rows] = await conn.execute(
+                `SELECT id_evento, id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, status, email FROM Evento`
+            );
+
+            if (rows.length > 0) {
+                return res.status(200).json(rows);
+            } else {
+                return res.status(404).json({ message: "Nenhum evento encontrado." });
+            }
+        } catch (error) {
+            console.error("Erro na conexão ou consulta ao banco:", error);
+            return res.status(500).json({ message: "Erro ao acessar o banco de dados." });
+        } finally {
+            if (conn) {
+                conn.end();
+            }
+        }
+    }
+    export async function getEventbyID(req: Request, res: Response) {
+        let conn;
+        const id_evento = Number(req.get('id_evento'));
+        console.log("Id do evento para Apostas:", id_evento);
+        try {
+            conn = await connectDatabase(); // Conectando ao banco
+            // Usando await para consultar com promessas
+            const [rows] = await conn.execute(
+                `SELECT titulo, descricao, dataEvento, inicioApostas, fimApostas, valor_cota FROM Evento where id_evento = ${id_evento}`
             );
 
             if (rows.length > 0) {

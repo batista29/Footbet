@@ -42,9 +42,11 @@ routes.post("/getDeposits", walletHandler.getDeposits);
 routes.post("/getWithDrawals", walletHandler.getWithDrawals);
 routes.post("/getBets", EventsHandler.getbets);
 routes.get("/getAllEvents", EventsHandler.getAllEvents);
+routes.get("/getAllEventsAdmin", EventsHandler.getAllEventsAdmin);
 
 routes.get('/topEvents', EventsHandler.topEvents);
 routes.post('/categoryEvents', EventsHandler.category);
+routes.post('/getEventbyID', EventsHandler.getEventbyID);
 
 server.use(routes);
 

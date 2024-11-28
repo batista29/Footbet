@@ -129,16 +129,24 @@
   .hero {
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
     padding: 3rem 1rem;
     gap: 2rem; 
 }
 
 .hero-content {
     max-width: 45%;
-    text-align: center; /* Centraliza o texto */
+    /*text-align: center;  Centraliza o texto */
     color: #ffffff;
 }
+#titulo{
+    text-align: center;
+}
+.container {
+    display: grid;
+    justify-content: center; /* Centraliza horizontal e verticalmente */
+    
+  }
 
 .hero-content h1.team-name {
     font-size: 3rem;
@@ -167,6 +175,7 @@
     font-size: 1.2rem;
     font-weight: bold;
     transition: background-color 0.3s ease;
+    
 }
 
 .hero-buttons .button.primary:hover {

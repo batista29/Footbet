@@ -7,7 +7,8 @@ async function AddEvent() {
     const betsEnd = document.getElementById('FimApts').value;
     const value = parseFloat(document.getElementById('valorCota').value.replace(',', '.'));
     const email = document.getElementById('email').value;
-    console.log(title, description, eventDate,betsStart, betsEnd,value,email);
+    const categoria = document.getElementById('categoria').value;
+    console.log(title, description, eventDate,betsStart, betsEnd,value,email,categoria);
 
     let infos_user= JSON.parse(localStorage.getItem('dados_user'));
     let id_user = infos_user.user_id;  // ID do usuário
@@ -24,16 +25,16 @@ async function AddEvent() {
         myHeaders.append("betsEnd",betsEnd);
         myHeaders.append("value", value);
         myHeaders.append("email",email);
+        myHeaders.append("categoria",categoria);
 
         const requestOptions = {
-            method: "PUT",
+            method: "POST",
             headers: myHeaders,
         };
         await fetch("http://localhost:3000/addNewEvent", requestOptions)
             .then((response) => {
                 console.log(response.text());
                 if (response.status === 200) {
-                    alert(`Solicitação realizada com sucesso`);
                     document.getElementById("feedback").innerHTML =`<div class="alert alert-success" role="alert">
                                                                     Cadastro realizado com sucesso!</div>`;
                     // location.reload()

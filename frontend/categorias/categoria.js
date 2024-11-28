@@ -21,7 +21,7 @@ window.addEventListener('click', (event) => {
 
 
 
-carousel = document.querySelector('.carousel');
+const carousel = document.querySelector('.carousel');
 const prevButton = document.querySelector('.carousel-button.prev');
 const nextButton = document.querySelector('.carousel-button.next');
 
@@ -53,7 +53,7 @@ function updateCarousel() {
 
 
 //evento mais apostado
-carousel2 = document.querySelector('.carousel2');
+const carousel2 = document.querySelector('.carousel2');
 const prevButton2 = document.querySelector('.carousel-button.prev2');
 const nextButton2 = document.querySelector('.carousel-button.next2');
 

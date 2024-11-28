@@ -34,7 +34,7 @@
             </div>
             <ul>
                 <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="#"><i class="fas fa-user"></i> Perfil</a></li>
+                <li><a href="../carteira/usersProfile.html"><i class="fas fa-user"></i> Perfil</a></li>
                 <li><a href="#"><i class="fas fa-wallet"></i> Carteira</a></li>
                 <li><a href="#"><i class="fas fa-calendar-alt"></i> Minhas Apostas</a></li>
                 <li><a href="#"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
@@ -44,11 +44,14 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h1 class="team-name" id="titulo"> PALMEIRAS VS CORINTHIANS</h1>
-            <h2 id="descricao">Jogo válido pela 30ª rodada do Brasileirão! Quem irá ganhar? Aposte já!</h2>
+            <h2 class="team-name" id="titulo"> </h2>
+            <h4 id="descricao"> </h4>
+            <h4 id="dtEvento">Data do evento: </h4>
+            <h4 id="inicio">Inicio das Apostas: </h4>
+            <h4 id="fim">Fim das Apostas: </h4>
             <br>
-            <div class="hero-buttons">
-                <button id="openModal" class="button primary" type="button" data-bs-toggle="modal" data-bs-target="#Modal">Apostar</button>
+            <div class="hero-buttons container">
+                <button id="openModal" class="button primary" type="button" data-bs-toggle="modal" data-bs-target="#Modal" onclick="passData()">Apostar</button>
             </div>
         </div>
         <div class="hero-image">
@@ -69,60 +72,31 @@
              <form>
                  <div class="mb-3 m-0">
                     <p>Escolha uma das opções abaixo:</p>
-                    <label>
-                        <strong><input type="radio" name="aposta" value="s" required> Sim </strong>
-                    </label>
-                    <br>
-                    <label>
-                        <strong><input type="radio" name="aposta" value="n" required> Não </strong>
-                    </label>
+                    <select class="custom-select form-control" id="aposta">
+                        <option selected>Escolher</option>
+                        <option value="s">Sim</option>
+                        <option value="n">Não</option>
+                      </select>
                  </div>
                  <div class="mb-3">
-                    <p>Valor de cada Cota: <strong>R$ 00.00</strong></p>
+                    <p>Valor de cada Cota: <strong id="valorCota">R$ 00.00</strong></p>
                  </div>
                  <div class="mb-3">
                     <input type="number" id="qtd_cotas" name="qtd_cotas" class="form-control"
                     placeholder="Quantidade de cotas" required>
                  </div>
+                 <input value="carregando" id="idEventoModal" type="hidden"></input>
+                 <input value="carregando" id="cota" type="hidden"></input>
                </form>
          </div>
          <div class="modal-footer">
              <button type="button" class="btn btn-secondary" 
              data-bs-dismiss="modal">Cancelar</button>
-             <button type="button" class="btn btn-primary">Salvar</button>
+             <button type="button" class="btn btn-primary" onclick="makeBet()">Apostar</button>
          </div>
      </div>
      </div>
  </div>
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Avaliar Evento</h1>
-                <button type="button" class="btn-close" 
-                data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <h2>Apostar no Jogo</h2>
-            <h3>Palmeiras irá vencer o Corinthians?</h3>
-            <form id="betForm">
-                <label>
-                    <strong><input type="radio" name="aposta" value="s" required> Sim </strong>
-                </label>
-                <br>
-                <label>
-                    <strong><input type="radio" name="aposta" value="n" required> Não </strong>
-                </label>
-                <br><br>
-                <p><strong>Valor da cota (R$):</strong> 5.50</p>
-                <input type="number" id="qtd_cotas" name="qtd_cotas" class="form-control"
-                    placeholder="Quantidade de cotas" required>
-                <input type="hidden" id="id_evento" value="1"> <!-- Exemplo: ID do evento -->
-                <br><br>
-                <button type="submit" class="button-primary">Confirmar Aposta</button>
-            </form>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
 
     <footer class="footer">
         <div class="footer-container">
@@ -143,6 +117,156 @@
         </div>
     </footer>
     </section>
+    <script>
+
+const menuToggle = document.querySelector('.menu-toggle');
+const sidebar = document.querySelector('.sidebar');
+const closeSidebar = document.querySelector('.close-sidebar');
+
+// Mostrar o menu
+menuToggle.addEventListener('click', () => {
+    sidebar.classList.add('active');
+});
+
+// Fechar o menu
+closeSidebar.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+});
+
+// Fechar o menu clicando fora
+window.addEventListener('click', (event) => {
+    if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+        sidebar.classList.remove('active');
+    }
+});
+
+// carregar dados evento na apgina
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${day}/${month}/${year}`;
+}
+
+function formatDatetime(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+           function obterId() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id"); // Captura o parâmetro 'id'
+      return id;
+    }
+    var id = obterId();
+    console.log(id);
+    var valor_cota = null;
+    async function carregar(id){
+        if (id) {
+        const myHeader = new Headers();
+        myHeader.append("Content-Type", "application/json");
+        myHeader.append("id_evento", id);
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeader,
+        };
+
+        try {
+            // Esperando a resposta da requisição
+            const result = await fetch("http://localhost:3000/getEventbyID", requestOptions);
+
+            if (result.ok) {
+                const infos_event = await result.json();  // Converter a resposta para JSON
+                
+                // Verificar o conteúdo da resposta
+                console.log("Resposta do backend:", infos_event);//retornando results normal
+                document.getElementById('titulo').innerHTML = `${infos_event[0].titulo}`;
+                document.getElementById('descricao').innerHTML = `${infos_event[0].descricao}`;
+                document.getElementById('dtEvento').innerHTML = `Data do evento: ${formatDate(infos_event[0].dataEvento)}`;
+                document.getElementById('inicio').innerHTML = `Inicio das Apostas: ${formatDatetime(infos_event[0].inicioApostas)}`;
+                document.getElementById('fim').innerHTML = `Fim das Apostas: ${formatDatetime(infos_event[0].fimApostas)}`;
+                valor_cota = infos_event[0].valor_cota;
+                } else {
+                    console.log("Campo 'saldo' não encontrado na resposta.");
+                }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    } else {
+        console.log("Erro: ID de usuário não fornecido.");
+
+    }
+    }
+    let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+    let id_user = infos_user.user_id;  // ID do usuário
+    console.log(id_user);// ID do usuário
+    carregar(id);
+    function passData(){
+        const idEvento = obterId();
+        const inputIdEvento = document.getElementById("idEventoModal"); 
+        if (idEvento) {
+        inputIdEvento.value = idEvento; // Atribui o ID ao input
+      } else {
+        inputIdEvento.value = "ID não encontrado"; // Caso não encontre o ID
+      }
+      document.getElementById("valorCota").textContent = `R$ ${valor_cota}`;
+      document.getElementById("cota").value = `${valor_cota}`; 
+    }
+
+    async function makeBet() {
+        let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+        let email = infos_user.email;  // ID do usuário
+        // ID do usuário
+        const id_evento = document.getElementById("idEventoModal").value;
+        const qtd_cotas = document.getElementById("qtd_cotas").value;
+        const valor_cota = document.getElementById("cota").value;
+        const aposta = document.getElementById("aposta").value;
+        console.log(email,aposta);
+        if (email) {
+        const myHeader = new Headers();
+        myHeader.append("Content-Type", "application/json");
+        myHeader.append("email", email);
+        myHeader.append("id_evento",id_evento);
+        myHeader.append("qtd_cotas",qtd_cotas);
+        myHeader.append("valor_cota",valor_cota);
+        myHeader.append("aposta",aposta);
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeader,
+        };
+
+        try {
+            // Esperando a resposta da requisição
+            const result = await fetch("http://localhost:3000/betOnEvent", requestOptions);
+             
+            if (result.ok) {
+                alert("Aposta realizada com sucesso!");  // Converter a resposta para JSON
+                
+                } else {
+                    alert("Erro ao realizar aposta!");
+                    console.log(result.text());
+                }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+        }
+    } else {
+        console.log("Erro: email não fornecido.");
+
+    }
+    }
+
+</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   
 </body>

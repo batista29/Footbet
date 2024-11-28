@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         try {
-            const result = await fetch("http://localhost:3000/getAllEvents", requestOptions);
+            const result = await fetch("http://localhost:3000/getAllEventsAdmin", requestOptions);
             console.log('Resposta da requisição:', result);
             if (result.ok) {
                 const resultArray = await result.json();
