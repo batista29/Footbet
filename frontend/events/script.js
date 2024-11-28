@@ -12,7 +12,7 @@ async function AddEvent() {
 
     let infos_user= JSON.parse(localStorage.getItem('dados_user'));
     let id_user = infos_user.user_id;  // ID do usuário
-    console.log(id_user);;  // ID do usuário
+    console.log(id_user); // ID do usuário
 
     if (title && description && eventDate &&betsStart &&betsEnd &&value && email) {
         const myHeaders = new Headers();
