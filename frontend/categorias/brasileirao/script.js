@@ -1,3 +1,11 @@
+function apostar(id_evento) {
+    let id = id_evento;
+    console.log(id);
+
+    localStorage.setItem('id_aposta', id);
+    window.location.href = '../../BetOnEvent/index.html';
+}
+
 // Função para formatar a data
 function formatDate(dateString) {
     const date = new Date(dateString);
@@ -11,7 +19,7 @@ function formatDate(dateString) {
 }
 async function carregar() {
     const myHeaders = new Headers();
-    myHeaders.append("categoria", "brasileirão");
+    myHeaders.append("categoria", "brasileirao");
 
     const requestOptions = {
         method: "POST",
@@ -29,7 +37,7 @@ async function carregar() {
 
         // Limpar conteúdos antigos, se necessário
         eventosContainer.innerHTML = '';
-
+        
         message.forEach(e => {
             const card = document.createElement('div');
             card.className = 'card';
@@ -42,7 +50,7 @@ async function carregar() {
                     <div class="categoria">${e.descricao || 'Descrição indisponível'}</div>
                     <div class="valor">Valor da cota: R$ ${e.valor_cota || '0.00'}</div>
                 </div>
-                <a href="#" class="button open" data-id="${e.id_evento}">Ver</a>
+               <button class="button" onclick="apostar(${e.id_evento})">Ver</button>
             `;
 
             // Adicionar o card ao contêiner

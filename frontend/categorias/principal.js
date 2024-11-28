@@ -3,7 +3,7 @@ function apostar(id_evento) {
   console.log(id);
 
   localStorage.setItem('id_aposta', id);
-  window.location.href='../BetOnEvent/index.html';
+  window.location.href = '../BetOnEvent/index.html';
 }
 
 async function pesquisar() {
@@ -40,7 +40,7 @@ async function pesquisar() {
                   <div class="categoria">${e.descricao || 'Descrição indisponível'}</div>
                   <div class="valor">Valor da cota: R$ ${e.valor_cota || '0.00'}</div>
               </div>
-              <a href="#" class="button">Ver</a>
+              <button class="button" onclick="apostar(${e.id_evento})">Ver</button>
           `;
       // Adicionar o card ao contêiner
       eventosContainer.appendChild(card);
