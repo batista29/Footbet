@@ -87,7 +87,7 @@ async function todos() {
                   <div class="categoria">${e.descricao || 'Descrição indisponível'}</div>
                   <div class="valor">Valor da cota: R$ ${e.valor_cota || '0.00'}</div>
               </div>
-              <button class="button" onclick="apostar(${e.id_evento})">Ver</button>
+              <button class="button" onclick="apostar(${e.id_evento})">Apostar</button>
           `;
 
       // Adicionar o card ao contêiner
