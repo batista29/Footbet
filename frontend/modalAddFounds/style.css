@@ -93,3 +93,8 @@ label {
     display: none;
     visibility: hidden;
 }
+
+.addFounds{
+    background-color: #e1f4ff;
+    color: #002663;
+}

@@ -1,3 +1,31 @@
+const menuToggle = document.querySelector('.menu-toggle');
+const sidebar = document.querySelector('.sidebar');
+const closeSidebar = document.querySelector('.close-sidebar');
+
+// Mostrar o menu
+menuToggle.addEventListener('click', () => {
+      sidebar.classList.add('active');
+});
+
+// Fechar o menu
+closeSidebar.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+});
+
+// Fechar o menu clicando fora
+window.addEventListener('click', (event) => {
+    if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+        sidebar.classList.remove('active');
+    }
+});
+function removerBtn(){
+  let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+    let id_user = infos_user.user_id;  // ID do usuário
+  if(id_user){
+    document.getElementById("hero-buttons").style.display ="none";
+  }
+}
+removerBtn();
 function apostar(id_evento) {
   let id = id_evento;
   console.log(id);
@@ -96,9 +124,9 @@ async function todos() {
 
   } catch (error) {
     console.error("Erro ao conectar ao servidor:", error);
-    alert("Erro ao conectar ao servidor. Por favor, tente novamente mais tarde.");
+    //alert("Erro ao conectar ao servidor. Por favor, tente novamente mais tarde.");
 
-    alert("Evento não existe ou indisponivel");
+    //alert("Evento não existe ou indisponivel");
   }
 }
 
@@ -148,9 +176,9 @@ async function topBets() {
 
   } catch (error) {
     console.error("Erro ao conectar ao servidor:", error);
-    alert("Erro ao conectar ao servidor. Por favor, tente novamente mais tarde.");
+    //alert("Erro ao conectar ao servidor. Por favor, tente novamente mais tarde.");
 
-    alert("Evento não existe ou indisponivel");
+    //alert("Evento não existe ou indisponivel");
   }
 }
 
@@ -252,4 +280,10 @@ nextButton3.addEventListener('click', () => {
 // Função para atualizar a posição do carrossel
 function updateCarousel3() {
   carousel3.style.transform = `translateX(${scrollPosition3}px)`;
+}
+
+//função para sair da conta
+function sair(){
+  localStorage.removeItem("dados_user");
+  window.location.href ="principal.html";
 }

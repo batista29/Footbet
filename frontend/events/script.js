@@ -15,6 +15,18 @@ async function AddEvent() {
     console.log(id_user); // ID do usuário
 
     if (title && description && eventDate &&betsStart &&betsEnd &&value && email) {
+        const dataev = new Date(eventDate);
+        const InicioApts = new Date(betsStart);
+        const FimApts = new Date(betsEnd);
+        if(dataev <= InicioApts || dataev <=FimApts){
+            document.getElementById("feedback").innerHTML =`<div class="alert alert-danger" role="alert">
+                                                        As data de aposta devem ser anterior a data do evento!</div>`;
+            return;                                            
+        }else if(FimApts<=InicioApts){
+            document.getElementById("feedback").innerHTML =`<div class="alert alert-danger" role="alert">
+            A data de fim das apostas devem ser posterior a data de início!</div>`;
+            return;
+        }
         const myHeaders = new Headers();
         myHeaders.append("Content-Type","application/JSON");
         myHeaders.append("id_criador",id_user);

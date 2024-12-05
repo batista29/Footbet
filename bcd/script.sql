@@ -107,6 +107,16 @@ INSERT INTO Evento (id_criador, titulo, descricao, dataEvento, inicioApostas, fi
 VALUES 
 (1, 'Rodada Brasileirão 1', 'Partida decisiva pela liderança', '2024-11-20', '2024-11-15 12:00:00', '2024-11-20 20:00:00', 2.0, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
 (1, 'Rodada Brasileirão 2', 'Clássico nacional emocionante', '2024-11-27', '2024-11-22 12:00:00', '2024-11-27 20:00:00', 2.5, 'ativo', 'natabatista2908@gmail.com', 'brasileirao');
+INSERT INTO Evento (id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, valor_cota, status, email, categoria)
+VALUES 
+(1, 'Rodada Brasileirão 3', 'Partida importante pela classificação', '2024-12-01', '2024-11-26 10:00:00', '2024-12-01 20:00:00', 1.9, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
+(1, 'Rodada Brasileirão 4', 'Disputa entre líderes', '2024-12-08', '2024-12-03 10:00:00', '2024-12-08 20:00:00', 2.2, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
+(1, 'Rodada Brasileirão 5', 'Partida entre rivais históricos', '2024-12-15', '2024-12-10 10:00:00', '2024-12-15 20:00:00', 2.0, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
+(1, 'Rodada Brasileirão 6', 'Jogo decisivo contra o rebaixamento', '2024-12-22', '2024-12-17 10:00:00', '2024-12-22 20:00:00', 1.8, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
+(1, 'Rodada Brasileirão 7', 'Confronto direto por vaga no G4', '2025-01-05', '2024-12-31 10:00:00', '2025-01-05 20:00:00', 2.1, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
+(1, 'Rodada Brasileirão 8', 'Grande jogo entre favoritos ao título', '2025-01-12', '2025-01-07 10:00:00', '2025-01-12 20:00:00', 2.4, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
+(1, 'Rodada Brasileirão 9', 'Partida cheia de expectativas', '2025-01-19', '2025-01-14 10:00:00', '2025-01-19 20:00:00', 2.3, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
+(1, 'Rodada Brasileirão 10', 'Última rodada do campeonato', '2025-01-26', '2025-01-21 10:00:00', '2025-01-26 20:00:00', 2.6, 'ativo', 'natabatista2908@gmail.com', 'brasileirao');
 
 -- Champions League
 INSERT INTO Evento (id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, valor_cota, status, email, categoria)
@@ -143,15 +153,3 @@ INSERT INTO Evento (id_criador, titulo, descricao, dataEvento, inicioApostas, fi
 VALUES 
 (1, 'Rodada Premier League 1', 'Partida decisiva pelo título', '2024-05-12', '2024-05-07 10:00:00', '2024-05-12 20:00:00', 2.5, 'ativo', 'natabatista2908@gmail.com', 'premier league'),
 (1, 'Rodada Premier League 2', 'Clássico inglês', '2024-05-19', '2024-05-14 10:00:00', '2024-05-19 20:00:00', 2.7, 'ativo', 'natabatista2908@gmail.com', 'premier league');
-
--- Mais 8 eventos para o Brasileirão
-INSERT INTO Evento (id_criador, titulo, descricao, dataEvento, inicioApostas, fimApostas, valor_cota, status, email, categoria)
-VALUES 
-(1, 'Rodada Brasileirão 3', 'Partida importante pela classificação', '2024-12-01', '2024-11-26 10:00:00', '2024-12-01 20:00:00', 1.9, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
-(1, 'Rodada Brasileirão 4', 'Disputa entre líderes', '2024-12-08', '2024-12-03 10:00:00', '2024-12-08 20:00:00', 2.2, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
-(1, 'Rodada Brasileirão 5', 'Partida entre rivais históricos', '2024-12-15', '2024-12-10 10:00:00', '2024-12-15 20:00:00', 2.0, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
-(1, 'Rodada Brasileirão 6', 'Jogo decisivo contra o rebaixamento', '2024-12-22', '2024-12-17 10:00:00', '2024-12-22 20:00:00', 1.8, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
-(1, 'Rodada Brasileirão 7', 'Confronto direto por vaga no G4', '2025-01-05', '2024-12-31 10:00:00', '2025-01-05 20:00:00', 2.1, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
-(1, 'Rodada Brasileirão 8', 'Grande jogo entre favoritos ao título', '2025-01-12', '2025-01-07 10:00:00', '2025-01-12 20:00:00', 2.4, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
-(1, 'Rodada Brasileirão 9', 'Partida cheia de expectativas', '2025-01-19', '2025-01-14 10:00:00', '2025-01-19 20:00:00', 2.3, 'ativo', 'natabatista2908@gmail.com', 'brasileirao'),
-(1, 'Rodada Brasileirão 10', 'Última rodada do campeonato', '2025-01-26', '2025-01-21 10:00:00', '2025-01-26 20:00:00', 2.6, 'ativo', 'natabatista2908@gmail.com', 'brasileirao');

@@ -1,3 +1,8 @@
+function sair() {
+    localStorage.clear();
+    window.location.href = '../accounts/login.html';
+}
+
 // 
 const menuToggle = document.querySelector('.menu-toggle');
 const sidebar = document.querySelector('.sidebar');

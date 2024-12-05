@@ -82,9 +82,7 @@
                 const message = await response.text();
 
                 if (response.ok) {
-                    alert(`Sucesso: ${message}`);
-                    // Redirecionar para outra página
-                    //window.location.href = "#";
+                    window.open("./login.html", "_blank");
                 } else {
                     alert(`Erro: ${message}`);
                 }

@@ -26,7 +26,7 @@
     margin-left: 10vh;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .orientacoes {
         display: none;
     }

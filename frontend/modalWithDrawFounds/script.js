@@ -1,12 +1,15 @@
 //Função principal para fazer transações
 async function doWithDraw() {
     const valueTransaction = parseFloat(document.getElementById('valueFoundsWithDraw').value.replace(',', '.'));
-//teste de commit
+    //teste de commit
     if (valueTransaction) {
 
+        let infos_user = JSON.parse(localStorage.getItem('dados_user'));
+        let id_user = infos_user.user_id;  // ID do usuário
+        console.log(id_user);  // ID do usuário
         const myHeaders = new Headers();
-        myHeaders.append("id_wallet", "3");
-        myHeaders.append("id_user", "3");
+        myHeaders.append("id_wallet", id_user);
+        myHeaders.append("id_user", id_user);
         myHeaders.append("value", valueTransaction);
 
         const requestOptions = {
@@ -20,7 +23,7 @@ async function doWithDraw() {
                 console.log(response.json);
                 if (response.status === 200) {
                     alert(`Saque de R$${valueTransaction} realizado com sucesso`);
-                    location.reload()
+                    // location.reload()
                 } else {
                     alert("Informação inválida, digite números positivos");
                 }
@@ -40,8 +43,7 @@ function openModal() {
 
 //Função para fechar o modal
 function closeModal() {
-    const modalFounds = document.getElementById('modalFounds');
-    modalFounds.classList.add('model');
+    window.location.href = "../accounts/login.html";
 }
 
 //Funções para trocar a cor dos botões de opção do modal

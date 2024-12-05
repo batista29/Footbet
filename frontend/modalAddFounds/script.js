@@ -1,9 +1,9 @@
 //Função principal para fazer transações
 async function doAddFounds() {
     const valueTransaction = parseFloat(document.getElementById('valueAddFounds').value.replace(',', '.'));
-//teste de commit 3
+    //teste de commit 3
     if (valueTransaction) {
-        let infos_user= JSON.parse(localStorage.getItem('dados_user'));
+        let infos_user = JSON.parse(localStorage.getItem('dados_user'));
         let id_user = infos_user.user_id;  // ID do usuário
         console.log(id_user);  // ID do usuário
         const myHeaders = new Headers();
@@ -33,6 +33,11 @@ async function doAddFounds() {
         alert("Digite todas as informações pedidas");
     }
 }
+
+function sacar() {
+    window.location.href = "../modalWithDrawFounds/modal.html";
+}
+
 //Função para chamar o modal
 function openModal() {
     const modalFounds = document.getElementById('modalFounds');
@@ -41,8 +46,7 @@ function openModal() {
 
 //Função para fechar o modal
 function closeModal() {
-    const modalFounds = document.getElementById('modalFounds');
-    modalFounds.classList.add('model');
+    window.location.href = "../accounts/login.html";
 }
 
 //Funções para trocar a cor dos botões de opção do modal
